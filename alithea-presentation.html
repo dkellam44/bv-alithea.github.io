@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea: Bridge to Embodied Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a1a;
+            color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .slides-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 120px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 40px;
+            right: 60px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 1000px;
+        }
+
+        h2 {
+            font-size: 48px;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            text-align: left;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            color: #999;
+            margin-top: -20px;
+            margin-bottom: 60px;
+        }
+
+        .key-message {
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 1.5;
+            margin-bottom: 50px;
+            max-width: 900px;
+            text-align: center;
+            font-style: italic;
+            color: #2dd4bf;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 1000px;
+            text-align: left;
+        }
+
+        .bullets {
+            list-style: none;
+            font-size: 28px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .bullets li {
+            margin-bottom: 24px;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .bullets li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2dd4bf;
+            font-weight: 600;
+        }
+
+        .accent {
+            color: #2dd4bf;
+            font-weight: 600;
+        }
+
+        .horizons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 40px;
+        }
+
+        .horizon-card {
+            background: rgba(45, 212, 191, 0.05);
+            border: 2px solid rgba(45, 212, 191, 0.2);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .horizon-label {
+            font-size: 18px;
+            color: #2dd4bf;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .horizon-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .horizon-desc {
+            font-size: 18px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .wedge-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 40px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .option-card.recommended {
+            background: rgba(45, 212, 191, 0.08);
+            border: 3px solid #2dd4bf;
+            transform: scale(1.05);
+        }
+
+        .option-number {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .option-card.recommended .option-number {
+            color: #2dd4bf;
+        }
+
+        .option-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .option-timeline {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 15px;
+        }
+
+        .option-desc {
+            font-size: 16px;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .quote {
+            font-size: 36px;
+            font-style: italic;
+            line-height: 1.5;
+            color: #2dd4bf;
+            text-align: center;
+            max-width: 900px;
+            margin: 40px 0;
+            position: relative;
+            padding: 0 60px;
+        }
+
+        .quote::before {
+            content: """;
+            position: absolute;
+            left: 0;
+            top: -20px;
+            font-size: 120px;
+            color: rgba(45, 212, 191, 0.2);
+            line-height: 1;
+        }
+
+        .motion-visual {
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .motion-path {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #2dd4bf, transparent);
+            top: 50%;
+            animation: flow 3s ease-in-out infinite;
+        }
+
+        @keyframes flow {
+            0%, 100% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        button {
+            background: rgba(45, 212, 191, 0.1);
+            border: 2px solid #2dd4bf;
+            color: #2dd4bf;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: rgba(45, 212, 191, 0.2);
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .speaker-notes {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(45, 212, 191, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            display: none;
+            z-index: 999;
+        }
+
+        .speaker-notes.visible {
+            display: block;
+        }
+
+        .notes-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .notes-timing {
+            color: #2dd4bf;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .toggle-notes {
+            position: fixed;
+            top: 40px;
+            left: 60px;
+            background: rgba(45, 212, 191, 0.1);
+            border: 2px solid #2dd4bf;
+            color: #2dd4bf;
+            padding: 8px 20px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .foundation-diagram {
+            width: 100%;
+            max-width: 700px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .foundation-base {
+            background: rgba(45, 212, 191, 0.1);
+            border: 3px solid #2dd4bf;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .foundation-branches {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .branch {
+            flex: 1;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .branch::before {
+            content: "";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            width: 2px;
+            height: 30px;
+            background: rgba(45, 212, 191, 0.3);
+        }
+
+        .small-bullets {
+            font-size: 22px;
+            line-height: 1.6;
+        }
+
+        .small-bullets li {
+            margin-bottom: 18px;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-notes" onclick="toggleNotes()">Toggle Speaker Notes</button>
+    
+    <div class="slides-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active" data-notes="Opening frame (~30-45s). Start warm: 'Hey — thanks for making time.' Two hats: alumni/friend AND builder. Not pitching a wild pivot. Here to reflect what Alithea already is and propose practical growth. Set collaborative tone." data-timing="30-45s">
+            <div class="slide-number">1 / 11</div>
+            <h1>Bridge to Embodied Intelligence</h1>
+            <div class="subtitle">Alithea Creations — Partnership Conversation</div>
+            <div class="motion-visual">
+                <div class="motion-path"></div>
+            </div>
+        </div>
+
+        <!-- Slide 2: What Alithea Already Is -->
+        <div class="slide" data-notes="What I see (~1-2 minutes). Alithea isn't stereotype mime. It's ensemble movement theatre — choreographic, multidisciplinary, embodied storytelling lab. You already have: distinct artistic language, education track record, WSU institutional anchor, collaborative work history. The ingredients exist. Question is: how to make it legible and sustainable." data-timing="1-2m">
+            <div class="slide-number">2 / 11</div>
+            <h2>What Alithea Already Is</h2>
+            <div class="content">
+                <ul class="bullets">
+                    <li><span class="accent">Movement theatre</span> — ensemble-based, choreographic</li>
+                    <li>Distinct artistic language grounded in embodied storytelling</li>
+                    <li>Education programs with proven impact</li>
+                    <li>Institutional anchor through Wichita State ecosystem</li>
+                    <li>History of multidisciplinary collaboration</li>
+                </ul>
+            </div>
+            <p class="key-message" style="font-size: 24px; margin-top: 30px;">You already have the ingredients of something bigger than "a show"</p>
+        </div>
+
+        <!-- Slide 3: Landscape Reality -->
+        <div class="slide" data-notes="Landscape reality (~1-2 minutes). Arts funding is harder: attention fragmented, touring unpredictable, old models unreliable. BUT weird opportunity: world hungry for embodied intelligence — nonverbal communication, movement literacy, believable human motion (digital media), ensemble coordination. Strategic opening: stay hard-to-categorize (beautiful but expensive) OR package what you do so partners/funders can understand and support." data-timing="1-2m">
+            <div class="slide-number">3 / 11</div>
+            <h2>The Landscape Reality</h2>
+            <div class="content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 40px;">
+                    <div>
+                        <div style="font-size: 20px; color: #2dd4bf; font-weight: 600; margin-bottom: 20px;">PRESSURE</div>
+                        <ul class="bullets small-bullets">
+                            <li>Fragmented attention</li>
+                            <li>Unpredictable funding cycles</li>
+                            <li>Old models no longer reliable</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div style="font-size: 20px; color: #2dd4bf; font-weight: 600; margin-bottom: 20px;">OPPORTUNITY</div>
+                        <ul class="bullets small-bullets">
+                            <li>Demand for embodied intelligence</li>
+                            <li>Nonverbal communication skills</li>
+                            <li>Movement literacy for digital media</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Thesis -->
+        <div class="slide" data-notes="The thesis (~1 minute). Simple: Alithea has unique movement grammar — teachable, transferable embodied storytelling language. Fastest way to unlock opportunities: build lightweight infrastructure that captures it. NOT bureaucracy. NOT turning artists into admins. Infrastructure that runs in background and creates optionality." data-timing="1m">
+            <div class="slide-number">4 / 11</div>
+            <h2>The Thesis</h2>
+            <div class="quote">
+                Alithea has a unique expressive framework  — and the fastest way to unlock new opportunities is to build lightweight infrastructure that captures it
+            </div>
+            <p style="font-size: 24px; text-align: center; color: #999; margin-top: 40px;">Not bureaucracy. Infrastructure that creates optionality.</p>
+        </div>
+
+        <!-- Slide 5: Three Horizons Overview -->
+        <div class="slide" data-notes="Three horizons intro (~30s). These are NOT promises — they're possible directions once foundation is built. Preview the three lanes before diving into each." data-timing="30s">
+            <div class="slide-number">5 / 11</div>
+            <h2>Three Rational Trajectories</h2>
+            <div class="content">
+                <p style="font-size: 24px; color: #999; margin-bottom: 50px; text-align: center;">Possible directions once the foundation is built</p>
+                <div style="display: flex; justify-content: center; gap: 80px; margin-top: 40px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; color: #2dd4bf; font-weight: 700; margin-bottom: 15px;">A</div>
+                        <div style="font-size: 20px;">Organization<br>of Record</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; color: #2dd4bf; font-weight: 700; margin-bottom: 15px;">B</div>
+                        <div style="font-size: 20px;">Movement-Grammar<br>Supplier</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; color: #2dd4bf; font-weight: 700; margin-bottom: 15px;">C</div>
+                        <div style="font-size: 20px;">Education +<br>Embodiment Engine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Horizon A -->
+        <div class="slide" data-notes="Horizon A detail (~45s). Preservation lane: gathering artifacts, documentation, lineage. Becoming credible steward of ensemble/movement theatre tradition that lacks clear organizational home compared to other forms." data-timing="45s">
+            <div class="slide-number">6 / 11</div>
+            <div class="content">
+                <div class="horizon-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="horizon-label">Horizon A</div>
+                    <div class="horizon-title">Organization of Record</div>
+                    <div class="horizon-desc" style="font-size: 22px; line-height: 1.6; margin-top: 30px;">
+                        Preservation: gathering artifacts, documentation, lineage<br><br>
+                        Becoming a credible steward of ensemble movement theatre tradition<br><br>
+                        <span class="accent">Authority</span> in a field that lacks a clear institutional home
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Horizon B -->
+        <div class="slide" data-notes="Horizon B detail (~45s). Applied partnerships: motion capture acting, XR/AR, robotics 'human feel', animation, game studios, advertising. Places needing believable embodied expression. Doesn't mean abandoning art — means translating art into training and collaboration capability." data-timing="45s">
+            <div class="slide-number">7 / 11</div>
+            <div class="content">
+                <div class="horizon-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="horizon-label">Horizon B</div>
+                    <div class="horizon-title">Movement-Intelligence Supplier</div>
+                    <div class="horizon-desc" style="font-size: 22px; line-height: 1.6; margin-top: 30px;">
+                        Applied partnerships: motion capture • XR/AR • robotics • animation • games<br><br>
+                        Translating the art into a <span class="accent">training and collaboration capability</span><br><br>
+                        Not abandoning art — expanding its reach
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Horizon C -->
+        <div class="slide" data-notes="Horizon C detail (~45s). Scaling existing education work — potentially wellness-adjacent track. Key difference: outcomes and curriculum structure so schools/institutions can adopt repeatedly. Repeatable, measurable, fundable." data-timing="45s">
+            <div class="slide-number">8 / 11</div>
+            <div class="content">
+                <div class="horizon-card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="horizon-label">Horizon C</div>
+                    <div class="horizon-title">Education + Embodiment Engine</div>
+                    <div class="horizon-desc" style="font-size: 22px; line-height: 1.6; margin-top: 30px;">
+                        Scaling what you already do in education<br><br>
+                        With <span class="accent">outcomes and curriculum structure</span><br><br>
+                        Schools and institutions can adopt it repeatedly
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 22px; text-align: center; color: #2dd4bf; margin-top: 50px;">All three become plausible if we can map the assets you already have</p>
+        </div>
+
+        <!-- Slide 9: Guardrails -->
+        <div class="slide" data-notes="Don't call Disney paragraph (~45-60s). Be explicit: NOT suggesting 'call Disney' or chase giant partnerships unprepared. Only reason to mention big industry shifts: show world values compressed creative intelligence. Smart move for Alithea: build bridgeable asset (curriculum, catalog, pilot partnership). So if something bigger becomes relevant, you're ready and credible. Keep dreams rational." data-timing="45-60s">
+            <div class="slide-number">9 / 11</div>
+            <h2>Guardrails</h2>
+            <div class="content" style="max-width: 900px; margin: 0 auto;">
+                <div style="background: rgba(45, 212, 191, 0.05); border-left: 4px solid #2dd4bf; padding: 40px; border-radius: 8px; margin: 40px 0;">
+                    <p style="font-size: 26px; line-height: 1.6; margin-bottom: 30px;">
+                        <strong>Not suggesting:</strong> "Call Disney tomorrow"
+                    </p>
+                    <p style="font-size: 26px; line-height: 1.6; margin-bottom: 30px;">
+                        <strong>Instead proposing:</strong> Build bridgeable assets
+                    </p>
+                    <p style="font-size: 22px; line-height: 1.6; color: #999;">
+                        So if something bigger becomes relevant, you're ready and credible
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Wedge Proposal -->
+        <div class="slide" data-notes="Wedge proposal (~2-3 minutes). Low-risk, high-leverage Phase 1. Three options. OPTION 1 (recommended): Ops + Knowledge Backbone MVP — 30 days. Single source of truth: contacts, partners, donors, alumni, works, artifacts. Grant/partnership tracking dashboard. Lightweight artifact intake with permissions. Outcome: clarity, less scramble, increased capacity, enables everything else. Option 2: WSU pilot workshop (embodied acting for mocap). Option 3: Artifact permissions sprint (10-20 key artifacts). Emphasize Option 1 enables 2 and 3 without stress." data-timing="2-3m">
+            <div class="slide-number">10 / 11</div>
+            <h2>The Wedge Proposal</h2>
+            <p style="font-size: 22px; color: #999; text-align: center; margin-bottom: 40px;">Phase 1: Low-risk, high-leverage starting point</p>
+            <div class="wedge-options">
+                <div class="option-card recommended">
+                    <div class="option-number">OPTION 1 — RECOMMENDED</div>
+                    <div class="option-title">Ops + Knowledge Backbone MVP</div>
+                    <div class="option-timeline">30 days</div>
+                    <div class="option-desc">
+                        Single source of truth<br>
+                        Grant/partnership dashboard<br>
+                        Artifact intake process<br><br>
+                        <strong style="color: #2dd4bf;">Enables all other horizons</strong>
+                    </div>
+                </div>
+                <div class="option-card">
+                    <div class="option-number">OPTION 2</div>
+                    <div class="option-title">WSU / Shocker Studios Pilot</div>
+                    <div class="option-timeline">30-60 days</div>
+                    <div class="option-desc">
+                        Workshop: "Embodied Acting for Motion Capture"<br>
+                        With documentation + feedback<br><br>
+                        Proof: does this lane have pull?
+                    </div>
+                </div>
+                <div class="option-card">
+                    <div class="option-number">OPTION 3</div>
+                    <div class="option-title">Artifact + Permissions Sprint</div>
+                    <div class="option-timeline">30-60 days</div>
+                    <div class="option-desc">
+                        10-20 key artifacts<br>
+                        Permission status + metadata<br><br>
+                        Seed for foundation fundraising
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: What I Need + Close -->
+        <div class="slide" data-notes="What I need + close (~1.5-2 minutes). For any wedge to work, need: (1) Point person for weekly input/decisions, (2) Realistic time commitment (60-90 min/week), (3) Access to existing materials (folders/archives/contacts, even if messy), (4) Agreement on definition of done (what does success look like 30/60/90 days?). Next step isn't big commitment — single working session. I ask questions, we identify what exists, pick the wedge. Then come back with: 30/60/90/365 roadmap, dashboard spec, two pilot options. Close with: How does this feel? What feels exciting? What feels risky or heavy?" data-timing="1.5-2m">
+            <div class="slide-number">11 / 11</div>
+            <h2>What I Need From You</h2>
+            <div class="content">
+                <ul class="bullets small-bullets" style="margin-bottom: 50px;">
+                    <li>A <span class="accent">point person</span> — weekly input and decisions</li>
+                    <li>Realistic <span class="accent">time commitment</span> — 60-90 min/week</li>
+                    <li><span class="accent">Access</span> to existing materials (even if messy)</li>
+                    <li>Agreement on <span class="accent">"definition of done"</span> for 30/60/90 days</li>
+                </ul>
+                <div style="background: rgba(45, 212, 191, 0.08); border: 2px solid rgba(45, 212, 191, 0.3); padding: 35px; border-radius: 12px; text-align: center;">
+                    <p style="font-size: 26px; line-height: 1.6; margin-bottom: 20px;">
+                        <strong>Easy Next Step:</strong> One working session
+                    </p>
+                    <p style="font-size: 20px; color: #999; line-height: 1.6;">
+                        I ask questions → we identify what exists → pick the wedge<br><br>
+                        Then: 30/60/90/365 roadmap + dashboard spec + pilot options
+                    </p>
+                </div>
+                <p style="font-size: 24px; text-align: center; color: #2dd4bf; margin-top: 40px; font-style: italic;">
+                    How does this feel? What feels exciting? What feels risky?
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="speaker-notes" id="speakerNotes">
+        <div class="notes-content">
+            <div class="notes-timing"></div>
+            <div class="notes-text"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="previousSlide()" id="prevBtn">← Previous</button>
+        <button onclick="nextSlide()" id="nextBtn">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const notesPanel = document.getElementById('speakerNotes');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            updateNotes();
+            updateButtons();
+        }
+
+        function updateNotes() {
+            const currentSlideEl = slides[currentSlide];
+            const notes = currentSlideEl.getAttribute('data-notes');
+            const timing = currentSlideEl.getAttribute('data-timing');
+            
+            document.querySelector('.notes-timing').textContent = `Timing: ${timing}`;
+            document.querySelector('.notes-text').textContent = notes;
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function toggleNotes() {
+            notesPanel.classList.toggle('visible');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'n' || e.key === 'N') {
+                e.preventDefault();
+                toggleNotes();
+            }
+        });
+
+        // Initialize
+        updateNotes();
+        updateButtons();
+    </script>
+</body>
+</html>
