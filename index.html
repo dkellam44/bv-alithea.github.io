@@ -4,290 +4,912 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alithea: Bridge to Embodied Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-deep: #0d0b0e;
+            --bg-warm: #1a1714;
+            --text-cream: #f5f0e8;
+            --text-muted: #a09890;
+            --accent-gold: #d4a574;
+            --accent-coral: #c97b6b;
+            --accent-warm: #e8c4a0;
+            --gesture-line: rgba(212, 165, 116, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            font-size: 16px;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #1a1a1a;
-            color: #f5f5f5;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-cream);
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* Gesture lines - abstract movement traces */
+        .gesture-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
             overflow: hidden;
         }
 
-        .slides-container {
+        .gesture-line {
+            position: absolute;
+            stroke: var(--gesture-line);
+            fill: none;
+            stroke-width: 1.5;
+            opacity: 0;
+            animation: gesture-fade 8s ease-in-out infinite;
+        }
+
+        .gesture-line:nth-child(1) { animation-delay: 0s; }
+        .gesture-line:nth-child(2) { animation-delay: 2s; }
+        .gesture-line:nth-child(3) { animation-delay: 4s; }
+
+        @keyframes gesture-fade {
+            0%, 100% { opacity: 0; stroke-dashoffset: 1000; }
+            20%, 80% { opacity: 1; }
+            50% { stroke-dashoffset: 0; }
+        }
+
+        /* Slides container */
+        .presentation {
             width: 100vw;
             height: 100vh;
             position: relative;
+            z-index: 1;
         }
 
         .slide {
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 80px 120px;
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
         }
 
         .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide-inner {
+            width: 100%;
+            height: 100%;
             display: flex;
-        }
-
-        .slide-number {
-            position: absolute;
-            top: 40px;
-            right: 60px;
-            font-size: 14px;
-            color: #666;
-            font-weight: 300;
-        }
-
-        h1 {
-            font-size: 72px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 40px;
-            text-align: center;
-            max-width: 1000px;
-        }
-
-        h2 {
-            font-size: 48px;
-            font-weight: 600;
-            line-height: 1.2;
-            margin-bottom: 30px;
-            text-align: left;
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .subtitle {
-            font-size: 28px;
-            font-weight: 300;
-            color: #999;
-            margin-top: -20px;
-            margin-bottom: 60px;
-        }
-
-        .key-message {
-            font-size: 32px;
-            font-weight: 400;
-            line-height: 1.5;
-            margin-bottom: 50px;
-            max-width: 900px;
-            text-align: center;
-            font-style: italic;
-            color: #2dd4bf;
-        }
-
-        .content {
-            width: 100%;
-            max-width: 1000px;
-            text-align: left;
-        }
-
-        .bullets {
-            list-style: none;
-            font-size: 28px;
-            line-height: 1.8;
-            margin-bottom: 40px;
-        }
-
-        .bullets li {
-            margin-bottom: 24px;
-            padding-left: 40px;
+            padding: 60px 80px;
             position: relative;
         }
 
-        .bullets li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: #2dd4bf;
-            font-weight: 600;
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-weight: 400;
+            letter-spacing: -0.02em;
         }
 
-        .accent {
-            color: #2dd4bf;
-            font-weight: 600;
+        h1 {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.15;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+
+        .accent { color: var(--accent-gold); }
+        .accent-coral { color: var(--accent-coral); }
+
+        /* Slide number */
+        .slide-marker {
+            position: absolute;
+            top: 40px;
+            right: 60px;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .slide-marker::before {
+            content: '';
+            display: inline-block;
+            width: 40px;
+            height: 1px;
+            background: var(--accent-gold);
+            margin-right: 12px;
+            vertical-align: middle;
+            opacity: 0.5;
+        }
+
+        /* ============ SLIDE 1: TITLE ============ */
+        .slide-title {
+            background: linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-warm) 100%);
+        }
+
+        .slide-title .slide-inner {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-group {
+            position: relative;
+        }
+
+        .title-pre {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s ease-out 0.3s forwards;
+        }
+
+        .title-main {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s ease-out 0.5s forwards;
+        }
+
+        .title-sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--text-muted);
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s ease-out 0.8s forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Breathing silhouette */
+        .silhouette-container {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.15;
+        }
+
+        .silhouette {
+            width: 200px;
+            height: 300px;
+            animation: breathe 6s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.02); }
+        }
+
+        /* ============ SLIDE 2: WHAT ALITHEA IS ============ */
+        .slide-what .slide-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .content-left {
+            padding-right: 40px;
+        }
+
+        .content-right {
+            position: relative;
+        }
+
+        .attribute-list {
+            list-style: none;
+            margin-top: 2.5rem;
+        }
+
+        .attribute-list li {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.15);
+            position: relative;
+            padding-left: 0;
+            color: var(--text-cream);
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .slide.active .attribute-list li {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .attribute-list li:nth-child(1) { animation-delay: 0.2s; }
+        .attribute-list li:nth-child(2) { animation-delay: 0.35s; }
+        .attribute-list li:nth-child(3) { animation-delay: 0.5s; }
+        .attribute-list li:nth-child(4) { animation-delay: 0.65s; }
+        .attribute-list li:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Abstract figure composition */
+        .figure-composition {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .figure-ring {
+            position: absolute;
+            border: 1px solid var(--gesture-line);
+            border-radius: 50%;
+            animation: pulse-ring 4s ease-in-out infinite;
+        }
+
+        .figure-ring:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            animation-delay: 0s;
+        }
+
+        .figure-ring:nth-child(2) {
+            width: 280px;
+            height: 280px;
+            animation-delay: 0.5s;
+        }
+
+        .figure-ring:nth-child(3) {
+            width: 360px;
+            height: 360px;
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.6; }
+        }
+
+        .figure-center {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--accent-gold) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        /* ============ SLIDE 3: LANDSCAPE ============ */
+        .slide-landscape .slide-inner {
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 120px;
+        }
+
+        .dual-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            margin-top: 3rem;
+        }
+
+        .column {
+            position: relative;
+        }
+
+        .column-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .column-label.pressure { color: var(--accent-coral); }
+        .column-label.opportunity { color: var(--accent-gold); }
+
+        .column-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.3;
+        }
+
+        .column ul {
+            list-style: none;
+        }
+
+        .column li {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            padding: 0.75rem 0;
+            color: var(--text-cream);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .column li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .column.pressure li::before { background: var(--accent-coral); }
+        .column.opportunity li::before { background: var(--accent-gold); }
+
+        /* ============ SLIDE 4: THESIS ============ */
+        .slide-thesis {
+            background: linear-gradient(180deg, var(--bg-warm) 0%, var(--bg-deep) 100%);
+        }
+
+        .slide-thesis .slide-inner {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 160px;
+        }
+
+        .thesis-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+            font-style: italic;
+            line-height: 1.5;
+            color: var(--text-cream);
+            max-width: 900px;
+            position: relative;
+            padding: 0 3rem;
+        }
+
+        .thesis-quote::before,
+        .thesis-quote::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--accent-gold);
+            opacity: 0.3;
+        }
+
+        .thesis-quote::before {
+            top: -30px;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .thesis-quote::after {
+            bottom: -30px;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+
+        .thesis-footnote {
+            margin-top: 3rem;
+            font-size: 1.125rem;
+            color: var(--text-muted);
+        }
+
+        /* ============ SLIDE 5: HORIZONS OVERVIEW ============ */
+        .slide-horizons .slide-inner {
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 100px;
+        }
+
+        .horizons-intro {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .horizons-intro p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
         }
 
         .horizons-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 40px;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 40px;
         }
 
-        .horizon-card {
-            background: rgba(45, 212, 191, 0.05);
-            border: 2px solid rgba(45, 212, 191, 0.2);
-            border-radius: 12px;
-            padding: 40px 30px;
+        .horizon-preview {
             text-align: center;
+            padding: 2.5rem 2rem;
+            position: relative;
         }
 
-        .horizon-label {
-            font-size: 18px;
-            color: #2dd4bf;
-            font-weight: 600;
-            margin-bottom: 20px;
+        .horizon-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--accent-gold), transparent);
+        }
+
+        .horizon-letter {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--accent-gold);
+            line-height: 1;
+            margin-top: 40px;
+            margin-bottom: 1.5rem;
+        }
+
+        .horizon-preview h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .horizon-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.3;
-        }
-
-        .horizon-desc {
-            font-size: 18px;
-            color: #999;
+            color: var(--text-cream);
             line-height: 1.5;
         }
 
-        .wedge-options {
+        /* ============ SLIDES 6-8: HORIZON DETAILS ============ */
+        .slide-horizon-detail .slide-inner {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 80px;
+            align-items: center;
+            padding: 80px 100px;
+        }
+
+        .horizon-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+        }
+
+        .horizon-icon {
+            width: 280px;
+            height: 280px;
+            position: relative;
+        }
+
+        /* Horizon A - Archive/Preservation */
+        .horizon-a-icon {
+            border: 2px solid var(--gesture-line);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            gap: 12px;
+        }
+
+        .archive-line {
+            height: 8px;
+            background: var(--gesture-line);
+            border-radius: 4px;
+            animation: archive-fill 3s ease-in-out infinite;
+        }
+
+        .archive-line:nth-child(1) { width: 90%; animation-delay: 0s; }
+        .archive-line:nth-child(2) { width: 75%; animation-delay: 0.2s; }
+        .archive-line:nth-child(3) { width: 85%; animation-delay: 0.4s; }
+        .archive-line:nth-child(4) { width: 60%; animation-delay: 0.6s; }
+        .archive-line:nth-child(5) { width: 80%; animation-delay: 0.8s; }
+        .archive-line:nth-child(6) { width: 70%; animation-delay: 1s; }
+
+        @keyframes archive-fill {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Horizon B - Connections/Partnerships */
+        .horizon-b-icon {
+            position: relative;
+        }
+
+        .connection-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: node-pulse 2s ease-in-out infinite;
+        }
+
+        .connection-node:nth-child(1) { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; }
+        .connection-node:nth-child(2) { top: 10%; left: 50%; transform: translateX(-50%); animation-delay: 0.3s; }
+        .connection-node:nth-child(3) { top: 50%; right: 10%; animation-delay: 0.6s; }
+        .connection-node:nth-child(4) { bottom: 10%; left: 50%; transform: translateX(-50%); animation-delay: 0.9s; }
+        .connection-node:nth-child(5) { top: 50%; left: 10%; animation-delay: 1.2s; }
+
+        .connection-line {
+            position: absolute;
+            background: var(--gesture-line);
+            transform-origin: center;
+        }
+
+        .connection-line:nth-child(6) { top: calc(10% + 10px); left: 50%; width: 1px; height: calc(40% - 25px); }
+        .connection-line:nth-child(7) { top: 50%; right: calc(10% + 20px); width: calc(40% - 35px); height: 1px; }
+        .connection-line:nth-child(8) { bottom: calc(10% + 10px); left: 50%; width: 1px; height: calc(40% - 25px); }
+        .connection-line:nth-child(9) { top: 50%; left: calc(10% + 20px); width: calc(40% - 35px); height: 1px; }
+
+        @keyframes node-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Horizon C - Education/Growth */
+        .horizon-c-icon {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+
+        .growth-bar {
+            width: 40px;
+            background: linear-gradient(to top, var(--accent-gold), var(--accent-warm));
+            border-radius: 4px 4px 0 0;
+            animation: grow-up 2s ease-out infinite;
+        }
+
+        .growth-bar:nth-child(1) { height: 80px; animation-delay: 0s; }
+        .growth-bar:nth-child(2) { height: 140px; animation-delay: 0.2s; }
+        .growth-bar:nth-child(3) { height: 200px; animation-delay: 0.4s; }
+        .growth-bar:nth-child(4) { height: 160px; animation-delay: 0.6s; }
+        .growth-bar:nth-child(5) { height: 220px; animation-delay: 0.8s; }
+
+        @keyframes grow-up {
+            0% { opacity: 0.3; transform: scaleY(0.8); }
+            50% { opacity: 0.8; transform: scaleY(1); }
+            100% { opacity: 0.3; transform: scaleY(0.8); }
+        }
+
+        .horizon-content h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .horizon-label-inline {
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .horizon-content p {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: var(--text-cream);
+        }
+
+        .horizon-content p.muted {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+        }
+
+        /* ============ SLIDE 9: GUARDRAILS ============ */
+        .slide-guardrails .slide-inner {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 140px;
+        }
+
+        .guardrail-box {
+            max-width: 800px;
+            margin-top: 3rem;
+            padding: 3rem;
+            border: 1px solid var(--gesture-line);
+            border-radius: 12px;
+            background: rgba(26, 23, 20, 0.5);
+        }
+
+        .guardrail-row {
+            display: flex;
+            align-items: flex-start;
+            text-align: left;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        .guardrail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .guardrail-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            min-width: 120px;
+            padding-top: 0.25rem;
+        }
+
+        .guardrail-text {
+            font-size: 1.25rem;
+            line-height: 1.5;
+            color: var(--text-cream);
+        }
+
+        .guardrail-text.highlight {
+            color: var(--accent-gold);
+        }
+
+        /* ============ SLIDE 10: WEDGE PROPOSAL ============ */
+        .slide-wedge .slide-inner {
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 80px;
+        }
+
+        .wedge-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .wedge-header p {
+            margin-top: 0.5rem;
+        }
+
+        .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 40px;
         }
 
         .option-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border: 1px solid rgba(160, 152, 144, 0.2);
             border-radius: 12px;
-            padding: 35px 25px;
-            text-align: center;
-            transition: all 0.3s ease;
+            background: rgba(26, 23, 20, 0.3);
+            transition: all 0.4s ease;
         }
 
         .option-card.recommended {
-            background: rgba(45, 212, 191, 0.08);
-            border: 3px solid #2dd4bf;
-            transform: scale(1.05);
+            border: 2px solid var(--accent-gold);
+            background: rgba(212, 165, 116, 0.05);
+            transform: scale(1.02);
         }
 
         .option-number {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 15px;
-            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
         }
 
         .option-card.recommended .option-number {
-            color: #2dd4bf;
+            color: var(--accent-gold);
         }
 
         .option-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
             line-height: 1.3;
         }
 
         .option-timeline {
-            font-size: 16px;
-            color: #999;
-            margin-bottom: 15px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
         }
 
-        .option-desc {
-            font-size: 16px;
-            color: #aaa;
-            line-height: 1.5;
+        .option-details {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-muted);
         }
 
-        .quote {
-            font-size: 36px;
-            font-style: italic;
-            line-height: 1.5;
-            color: #2dd4bf;
+        .option-highlight {
+            display: block;
+            margin-top: 1rem;
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        /* ============ SLIDE 11: CLOSE ============ */
+        .slide-close .slide-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            padding: 80px 100px;
+        }
+
+        .needs-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .needs-list li {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .needs-list .bullet {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .next-step-box {
+            background: rgba(212, 165, 116, 0.08);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
             text-align: center;
-            max-width: 900px;
-            margin: 40px 0;
-            position: relative;
-            padding: 0 60px;
         }
 
-        .quote::before {
-            content: """;
-            position: absolute;
-            left: 0;
-            top: -20px;
-            font-size: 120px;
-            color: rgba(45, 212, 191, 0.2);
-            line-height: 1;
+        .next-step-box h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
         }
 
-        .motion-visual {
-            width: 100%;
-            max-width: 800px;
-            height: 200px;
-            margin: 40px 0;
-            position: relative;
-            overflow: hidden;
+        .next-step-box p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 0.75rem;
         }
 
-        .motion-path {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #2dd4bf, transparent);
-            top: 50%;
-            animation: flow 3s ease-in-out infinite;
+        .closing-question {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--accent-gold);
+            margin-top: 2rem;
         }
 
-        @keyframes flow {
-            0%, 100% { transform: translateX(-100%); opacity: 0; }
-            50% { opacity: 1; }
-        }
-
-        .controls {
+        /* ============ NAVIGATION ============ */
+        .nav-container {
             position: fixed;
             bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             display: flex;
-            gap: 20px;
-            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            z-index: 100;
         }
 
-        button {
-            background: rgba(45, 212, 191, 0.1);
-            border: 2px solid #2dd4bf;
-            color: #2dd4bf;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 12px 28px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
 
-        button:hover {
-            background: rgba(45, 212, 191, 0.2);
-            transform: translateY(-2px);
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent-gold);
+            color: var(--bg-deep);
         }
 
-        button:disabled {
+        .nav-btn:disabled {
             opacity: 0.3;
             cursor: not-allowed;
+        }
+
+        .nav-progress {
+            display: flex;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(160, 152, 144, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--accent-gold);
+            transform: scale(1.2);
+        }
+
+        .progress-dot:hover {
+            background: var(--accent-warm);
+        }
+
+        /* Speaker notes toggle */
+        .notes-toggle {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            background: transparent;
+            border: 1px solid rgba(160, 152, 144, 0.3);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .notes-toggle:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
         }
 
         .speaker-notes {
@@ -296,377 +918,860 @@
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid rgba(45, 212, 191, 0.3);
+            max-width: 700px;
+            background: rgba(13, 11, 14, 0.95);
+            border: 1px solid rgba(212, 165, 116, 0.2);
             border-radius: 8px;
-            padding: 20px;
+            padding: 1.5rem 2rem;
+            z-index: 99;
             display: none;
-            z-index: 999;
         }
 
         .speaker-notes.visible {
             display: block;
         }
 
-        .notes-content {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #ccc;
-        }
-
         .notes-timing {
-            color: #2dd4bf;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 0.75rem;
         }
 
-        .toggle-notes {
-            position: fixed;
-            top: 40px;
-            left: 60px;
-            background: rgba(45, 212, 191, 0.1);
-            border: 2px solid #2dd4bf;
-            color: #2dd4bf;
-            padding: 8px 20px;
-            font-size: 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .foundation-diagram {
-            width: 100%;
-            max-width: 700px;
-            margin: 40px 0;
-            text-align: center;
-        }
-
-        .foundation-base {
-            background: rgba(45, 212, 191, 0.1);
-            border: 3px solid #2dd4bf;
-            padding: 25px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .foundation-branches {
-            display: flex;
-            justify-content: space-around;
-            gap: 20px;
-        }
-
-        .branch {
-            flex: 1;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            font-size: 16px;
-            position: relative;
-        }
-
-        .branch::before {
-            content: "";
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            width: 2px;
-            height: 30px;
-            background: rgba(45, 212, 191, 0.3);
-        }
-
-        .small-bullets {
-            font-size: 22px;
+        .notes-text {
+            font-size: 0.9rem;
             line-height: 1.6;
+            color: var(--text-muted);
         }
 
-        .small-bullets li {
-            margin-bottom: 18px;
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .slide-inner {
+                padding: 40px 60px;
+            }
+
+            .dual-columns,
+            .slide-what .slide-inner,
+            .slide-horizon-detail .slide-inner,
+            .slide-close .slide-inner {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .horizons-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Tablet and smaller - enable scrolling */
+        @media (max-width: 1024px) {
+            body {
+                overflow: auto;
+            }
+
+            .presentation {
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .slide {
+                position: relative;
+                height: auto;
+                min-height: 100vh;
+                display: none;
+            }
+
+            .slide.active {
+                display: flex;
+            }
+
+            .slide-inner {
+                padding: 80px 40px 140px 40px;
+                min-height: 100vh;
+                height: auto;
+                align-content: flex-start;
+            }
+
+            .slide-title .slide-inner {
+                justify-content: flex-start;
+                padding-top: 120px;
+            }
+
+            .silhouette-container {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin-top: 60px;
+            }
+
+            .slide-marker {
+                top: 20px;
+                right: 20px;
+            }
+
+            .notes-toggle {
+                top: 20px;
+                left: 20px;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+
+            h2 {
+                font-size: clamp(1.75rem, 6vw, 2.5rem);
+            }
+
+            .title-sub {
+                font-size: 1.25rem;
+            }
+
+            .thesis-quote {
+                font-size: clamp(1.25rem, 4vw, 1.75rem);
+                padding: 0 1.5rem;
+            }
+
+            .thesis-quote::before,
+            .thesis-quote::after {
+                width: 40px;
+                height: 40px;
+            }
+
+            .thesis-quote::before {
+                top: -20px;
+            }
+
+            .thesis-quote::after {
+                bottom: -20px;
+            }
+
+            .figure-composition {
+                height: 250px;
+            }
+
+            .figure-ring:nth-child(1) { width: 120px; height: 120px; }
+            .figure-ring:nth-child(2) { width: 180px; height: 180px; }
+            .figure-ring:nth-child(3) { width: 240px; height: 240px; }
+
+            .horizon-icon {
+                width: 200px;
+                height: 200px;
+            }
+
+            .horizon-a-icon {
+                padding: 1.5rem;
+                gap: 8px;
+            }
+
+            .archive-line {
+                height: 6px;
+            }
+
+            .growth-bar {
+                width: 30px;
+            }
+
+            .growth-bar:nth-child(1) { height: 50px; }
+            .growth-bar:nth-child(2) { height: 90px; }
+            .growth-bar:nth-child(3) { height: 130px; }
+            .growth-bar:nth-child(4) { height: 100px; }
+            .growth-bar:nth-child(5) { height: 150px; }
+
+            .horizon-c-icon {
+                padding-bottom: 20px;
+            }
+
+            .nav-container {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(to top, var(--bg-deep) 70%, transparent);
+                padding: 20px;
+                padding-bottom: 25px;
+            }
+
+            .speaker-notes {
+                bottom: 90px;
+                width: 90%;
+                padding: 1rem 1.25rem;
+            }
+
+            .speaker-notes .notes-text {
+                font-size: 0.8rem;
+            }
+
+            .guardrail-box {
+                padding: 1.5rem;
+            }
+
+            .guardrail-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .guardrail-label {
+                min-width: auto;
+            }
+
+            .guardrail-text {
+                font-size: 1.1rem;
+            }
+
+            .next-step-box {
+                padding: 2rem;
+            }
+
+            .next-step-box h3 {
+                font-size: 1.5rem;
+            }
+
+            .closing-question {
+                font-size: 1.25rem;
+            }
+
+            .attribute-list li {
+                font-size: 1.1rem;
+                padding: 1rem 0;
+            }
+
+            .horizon-content p {
+                font-size: 1.1rem;
+            }
+
+            .horizons-grid {
+                gap: 20px;
+            }
+
+            .horizon-preview {
+                padding: 1.5rem 1rem;
+            }
+
+            .horizon-preview::before {
+                height: 40px;
+            }
+
+            .horizon-letter {
+                font-size: 3rem;
+                margin-top: 30px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .slide-inner {
+                padding: 70px 24px 130px 24px;
+            }
+
+            .slide-title .slide-inner {
+                padding-top: 100px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .title-pre {
+                font-size: 0.7rem;
+                letter-spacing: 0.25em;
+            }
+
+            .title-sub {
+                font-size: 1rem;
+                margin-top: 1.5rem;
+            }
+
+            .thesis-quote {
+                font-size: 1.1rem;
+                padding: 0 1rem;
+            }
+
+            .thesis-quote::before,
+            .thesis-quote::after {
+                width: 30px;
+                height: 30px;
+            }
+
+            .thesis-footnote {
+                font-size: 1rem;
+                margin-top: 2rem;
+            }
+
+            .slide-marker {
+                font-size: 0.65rem;
+            }
+
+            .slide-marker::before {
+                width: 25px;
+                margin-right: 8px;
+            }
+
+            .column-label {
+                font-size: 0.65rem;
+                margin-bottom: 1rem;
+            }
+
+            .column li {
+                font-size: 1rem;
+                padding: 0.5rem 0;
+                padding-left: 1.25rem;
+            }
+
+            .column li::before {
+                width: 5px;
+                height: 5px;
+            }
+
+            .attribute-list li {
+                font-size: 1rem;
+                padding: 0.75rem 0;
+            }
+
+            .figure-composition {
+                height: 180px;
+            }
+
+            .figure-ring:nth-child(1) { width: 80px; height: 80px; }
+            .figure-ring:nth-child(2) { width: 120px; height: 120px; }
+            .figure-ring:nth-child(3) { width: 160px; height: 160px; }
+
+            .figure-center {
+                width: 50px;
+                height: 50px;
+            }
+
+            .horizon-visual {
+                justify-content: center;
+                padding: 20px 0;
+            }
+
+            .horizon-icon {
+                width: 160px;
+                height: 160px;
+            }
+
+            .horizon-label-inline {
+                font-size: 0.65rem;
+            }
+
+            .horizon-content h2 {
+                font-size: 1.4rem;
+            }
+
+            .horizon-content p {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .horizon-content p.muted {
+                font-size: 0.95rem;
+            }
+
+            .horizons-intro p {
+                font-size: 1rem;
+            }
+
+            .horizon-preview {
+                padding: 1.25rem 1rem;
+            }
+
+            .horizon-letter {
+                font-size: 2.5rem;
+                margin-top: 25px;
+                margin-bottom: 1rem;
+            }
+
+            .horizon-preview h3 {
+                font-size: 0.85rem;
+            }
+
+            .guardrail-box {
+                padding: 1.25rem;
+            }
+
+            .guardrail-label {
+                font-size: 0.65rem;
+            }
+
+            .guardrail-text {
+                font-size: 1rem;
+            }
+
+            .wedge-header p {
+                font-size: 0.95rem;
+            }
+
+            .option-card {
+                padding: 1.5rem;
+            }
+
+            .option-card.recommended {
+                transform: none;
+            }
+
+            .option-number {
+                font-size: 0.6rem;
+            }
+
+            .option-title {
+                font-size: 1.25rem;
+            }
+
+            .option-timeline {
+                font-size: 0.8rem;
+            }
+
+            .option-details {
+                font-size: 0.9rem;
+            }
+
+            .needs-list li {
+                font-size: 1rem;
+                padding: 0.75rem 0;
+            }
+
+            .next-step-box {
+                padding: 1.5rem;
+            }
+
+            .next-step-box h3 {
+                font-size: 1.25rem;
+            }
+
+            .next-step-box p {
+                font-size: 0.9rem;
+            }
+
+            .closing-question {
+                font-size: 1.1rem;
+                margin-top: 1.5rem;
+            }
+
+            .nav-container {
+                gap: 15px;
+                padding: 15px;
+                padding-bottom: 20px;
+            }
+
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.75rem;
+            }
+
+            .progress-dot {
+                width: 6px;
+                height: 6px;
+            }
+
+            .nav-progress {
+                gap: 6px;
+            }
+
+            .notes-toggle {
+                padding: 6px 12px;
+                font-size: 0.65rem;
+            }
+
+            .speaker-notes {
+                bottom: 80px;
+                padding: 1rem;
+            }
+
+            .notes-timing {
+                font-size: 0.65rem;
+            }
+
+            .notes-text {
+                font-size: 0.75rem;
+            }
+
+            .silhouette-container {
+                margin-top: 40px;
+            }
+
+            .silhouette {
+                width: 120px;
+                height: 180px;
+            }
+
+            .gesture-canvas {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- <button class="toggle-notes" onclick="toggleNotes()">Toggle Speaker Notes</button> -->
-    
-    <div class="slides-container">
-        <!-- Slide 1: Title -->
-        <div class="slide active" data-notes="Opening frame (~30-45s). Start warm: 'Hey — thanks for making time.' Two hats: alumni/friend AND builder. Not pitching a wild pivot. Here to reflect what Alithea already is and propose practical growth. Set collaborative tone." data-timing="30-45s">
-            <div class="slide-number">1 / 11</div>
-            <h1>Bridge to Embodied Intelligence</h1>
-            <div class="subtitle">Alithea Creations — Partnership Conversation</div>
-            <div class="motion-visual">
-                <div class="motion-path"></div>
+    <!-- Ambient gesture lines -->
+    <svg class="gesture-canvas" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+        <path class="gesture-line" d="M-100,400 Q400,200 600,500 T1200,300 T1900,600" stroke-dasharray="1000" />
+        <path class="gesture-line" d="M-100,700 Q300,500 700,700 T1300,400 T2000,500" stroke-dasharray="1000" />
+        <path class="gesture-line" d="M-100,200 Q500,400 800,150 T1400,350 T1950,200" stroke-dasharray="1000" />
+    </svg>
+
+    <!-- <button class="notes-toggle" onclick="toggleNotes()">Notes</button> -->
+
+    <div class="presentation">
+        <!-- SLIDE 1: TITLE -->
+        <div class="slide slide-title active" data-notes="Opening frame (~30-45s). Start warm: 'Hey — thanks for making time.' Two hats: alumni/friend AND builder. Not pitching a wild pivot. Here to reflect what Alithea already is and propose practical growth. Set collaborative tone." data-timing="30-45s">
+            <div class="slide-inner">
+                <div class="slide-marker">01 — 11</div>
+                <div class="title-group">
+                    <div class="title-pre">Alithea Creations</div>
+                    <h1 class="title-main">Bridge to<br><span class="accent">Embodied Intelligence</span></h1>
+                    <p class="title-sub">A partnership conversation</p>
+                </div>
+                <div class="silhouette-container">
+                    <svg class="silhouette" viewBox="0 0 100 150">
+                        <ellipse cx="50" cy="25" rx="15" ry="18" fill="none" stroke="var(--gesture-line)" stroke-width="1"/>
+                        <line x1="50" y1="43" x2="50" y2="90" stroke="var(--gesture-line)" stroke-width="1"/>
+                        <line x1="50" y1="55" x2="25" y2="75" stroke="var(--gesture-line)" stroke-width="1"/>
+                        <line x1="50" y1="55" x2="75" y2="70" stroke="var(--gesture-line)" stroke-width="1"/>
+                        <line x1="50" y1="90" x2="30" y2="140" stroke="var(--gesture-line)" stroke-width="1"/>
+                        <line x1="50" y1="90" x2="70" y2="140" stroke="var(--gesture-line)" stroke-width="1"/>
+                    </svg>
+                </div>
             </div>
         </div>
 
-        <!-- Slide 2: What Alithea Already Is -->
-        <div class="slide" data-notes="What I see (~1-2 minutes). Alithea isn't stereotype mime. It's ensemble movement theatre — choreographic, multidisciplinary, embodied storytelling lab. You already have: distinct artistic language, education track record, WSU institutional anchor, collaborative work history. The ingredients exist. Question is: how to make it legible and sustainable." data-timing="1-2m">
-            <div class="slide-number">2 / 11</div>
-            <h2>What Alithea Already Is</h2>
-            <div class="content">
-                <ul class="bullets">
-                    <li><span class="accent">Movement theatre</span> — ensemble-based, choreographic</li>
-                    <li>Distinct artistic language grounded in embodied storytelling</li>
-                    <li>Education programs with proven impact</li>
-                    <li>Institutional anchor through Wichita State ecosystem</li>
-                    <li>History of multidisciplinary collaboration</li>
-                </ul>
+        <!-- SLIDE 2: WHAT ALITHEA IS -->
+        <div class="slide slide-what" data-notes="What I see (~1-2 minutes). Alithea isn't stereotype mime. It's ensemble movement theatre — choreographic, multidisciplinary, embodied storytelling lab. You already have: distinct artistic language, education track record, WSU institutional anchor, collaborative work history. The ingredients exist. Question is: how to make it legible and sustainable." data-timing="1-2m">
+            <div class="slide-inner">
+                <div class="slide-marker">02 — 11</div>
+                <div class="content-left">
+                    <h2>What Alithea<br>Already Is</h2>
+                    <ul class="attribute-list">
+                        <li><span class="accent">Movement theatre</span> — ensemble-based, choreographic</li>
+                        <li>A distinct artistic language grounded in embodied storytelling</li>
+                        <li>Education programs with proven impact</li>
+                        <li>Institutional anchor through the Wichita State ecosystem</li>
+                        <li>A history of multidisciplinary collaboration</li>
+                    </ul>
+                </div>
+                <div class="content-right">
+                    <div class="figure-composition">
+                        <div class="figure-ring"></div>
+                        <div class="figure-ring"></div>
+                        <div class="figure-ring"></div>
+                        <div class="figure-center"></div>
+                    </div>
+                </div>
             </div>
-            <p class="key-message" style="font-size: 24px; margin-top: 30px;">You already have the ingredients of something bigger than "a show"</p>
         </div>
 
-        <!-- Slide 3: Landscape Reality -->
-        <div class="slide" data-notes="Landscape reality (~1-2 minutes). Arts funding is harder: attention fragmented, touring unpredictable, old models unreliable. BUT weird opportunity: world hungry for embodied intelligence — nonverbal communication, movement literacy, believable human motion (digital media), ensemble coordination. Strategic opening: stay hard-to-categorize (beautiful but expensive) OR package what you do so partners/funders can understand and support." data-timing="1-2m">
-            <div class="slide-number">3 / 11</div>
-            <h2>The Landscape Reality</h2>
-            <div class="content">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 40px;">
-                    <div>
-                        <div style="font-size: 20px; color: #2dd4bf; font-weight: 600; margin-bottom: 20px;">PRESSURE</div>
-                        <ul class="bullets small-bullets">
-                            <li>Fragmented attention</li>
+        <!-- SLIDE 3: LANDSCAPE -->
+        <div class="slide slide-landscape" data-notes="Landscape reality (~1-2 minutes). Arts funding is harder: attention fragmented, touring unpredictable, old models unreliable. BUT weird opportunity: world hungry for embodied intelligence — nonverbal communication, movement literacy, believable human motion (digital media), ensemble coordination. Strategic opening: stay hard-to-categorize OR package what you do so partners/funders can understand and support." data-timing="1-2m">
+            <div class="slide-inner">
+                <div class="slide-marker">03 — 11</div>
+                <h2>The Landscape Reality</h2>
+                <div class="dual-columns">
+                    <div class="column pressure">
+                        <div class="column-label pressure">Pressure</div>
+                        <ul>
+                            <li>Fragmented attention economy</li>
                             <li>Unpredictable funding cycles</li>
-                            <li>Old box office models no longer reliable</li>
+                            <li>Legacy box office models failing</li>
+                            <li>Sustainability pressure mounting</li>
                         </ul>
                     </div>
-                    <div>
-                        <div style="font-size: 20px; color: #2dd4bf; font-weight: 600; margin-bottom: 20px;">OPPORTUNITY</div>
-                        <ul class="bullets small-bullets">
-                            <li>Demand for embodied intelligence</li>
-                            <li>Nonverbal relating skills</li>
+                    <div class="column opportunity">
+                        <div class="column-label opportunity">Opportunity</div>
+                        <ul>
+                            <li>Rising demand for embodied intelligence</li>
+                            <li>Nonverbal communication skills valued</li>
                             <li>Movement literacy for digital media</li>
+                            <li>Ensemble coordination expertise</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 4: Thesis -->
-        <div class="slide" data-notes="The thesis (~1 minute). Simple: Alithea has unique movement grammar — teachable, transferable embodied storytelling language. Fastest way to unlock opportunities: build lightweight infrastructure that captures it. NOT bureaucracy. NOT turning artists into admins. Infrastructure that runs in background and creates optionality." data-timing="1m">
-            <div class="slide-number">4 / 11</div>
-            <h2>The Thesis</h2>
-            <div class="quote">
-                Alithea has a uniqely human expressive framework  — and the fastest way to unlock new opportunities is to build lightweight infrastructure that captures it
-            </div>
-            <p style="font-size: 24px; text-align: center; color: #999; margin-top: 40px;">Not bureaucracy. Infrastructure that creates optionality.</p>
-        </div>
-
-        <!-- Slide 5: Three Horizons Overview -->
-        <div class="slide" data-notes="Three horizons intro (~30s). These are NOT promises — they're possible directions once foundation is built. Preview the three lanes before diving into each." data-timing="30s">
-            <div class="slide-number">5 / 11</div>
-            <h2>Three Rational Trajectories</h2>
-            <div class="content">
-                <p style="font-size: 24px; color: #999; margin-bottom: 50px; text-align: center;">Possible directions once the foundation is built</p>
-                <div style="display: flex; justify-content: center; gap: 80px; margin-top: 40px;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 48px; color: #2dd4bf; font-weight: 700; margin-bottom: 15px;">A</div>
-                        <div style="font-size: 20px;">Become Organization<br>of Record</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 48px; color: #2dd4bf; font-weight: 700; margin-bottom: 15px;">B</div>
-                        <div style="font-size: 20px;">Movement-Intelligence<br>Supplier</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 48px; color: #2dd4bf; font-weight: 700; margin-bottom: 15px;">C</div>
-                        <div style="font-size: 20px;">Education +<br>Embodiment Engine</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 6: Horizon A -->
-        <div class="slide" data-notes="Horizon A detail (~45s). Preservation lane: gathering artifacts, documentation, lineage. Becoming credible steward of ensemble/movement theatre tradition that lacks clear organizational home compared to other forms." data-timing="45s">
-            <div class="slide-number">6 / 11</div>
-            <div class="content">
-                <div class="horizon-card" style="max-width: 800px; margin: 0 auto;">
-                    <div class="horizon-label">Horizon A</div>
-                    <div class="horizon-title">Organization of Record</div>
-                    <div class="horizon-desc" style="font-size: 22px; line-height: 1.6; margin-top: 30px;">
-                        Preservation: gathering artifacts, documentation, mapping lineage<br><br>
-                        Becoming a credible steward of ensemble movement theatre tradition<br><br>
-                        <span class="accent">Authority</span> in a field that lacks a clear institutional home
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 7: Horizon B -->
-        <div class="slide" data-notes="Horizon B detail (~45s). Applied partnerships: motion capture acting, XR/AR, robotics 'human feel', animation, game studios, advertising. Places needing believable embodied expression. Doesn't mean abandoning art — means translating art into training and collaboration capability." data-timing="45s">
-            <div class="slide-number">7 / 11</div>
-            <div class="content">
-                <div class="horizon-card" style="max-width: 800px; margin: 0 auto;">
-                    <div class="horizon-label">Horizon B</div>
-                    <div class="horizon-title">Movement-Intelligence Supplier</div>
-                    <div class="horizon-desc" style="font-size: 22px; line-height: 1.6; margin-top: 30px;">
-                        Applied partnerships: motion capture • XR/AR • robotics • animation • games<br><br>
-                        Translating the art into a <span class="accent">training and collaboration capability</span><br><br>
-                        Not abandoning art — expanding its reach
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 8: Horizon C -->
-        <div class="slide" data-notes="Horizon C detail (~45s). Scaling existing education work — potentially wellness-adjacent track. Key difference: outcomes and curriculum structure so schools/institutions can adopt repeatedly. Repeatable, measurable, fundable." data-timing="45s">
-            <div class="slide-number">8 / 11</div>
-            <div class="content">
-                <div class="horizon-card" style="max-width: 800px; margin: 0 auto;">
-                    <div class="horizon-label">Horizon C</div>
-                    <div class="horizon-title">Education + Embodiment Engine</div>
-                    <div class="horizon-desc" style="font-size: 22px; line-height: 1.6; margin-top: 30px;">
-                        Scaling what you already do in education<br><br>
-                        With <span class="accent">outcomes and curriculum structure</span><br><br>
-                        Schools and institutions can adopt it repeatedly
-                    </div>
-                </div>
-            </div>
-            <p style="font-size: 22px; text-align: center; color: #2dd4bf; margin-top: 50px;">All three become plausible if we can map the assets you already have</p>
-        </div>
-
-        <!-- Slide 9: Guardrails -->
-        <div class="slide" data-notes="Don't call Disney paragraph (~45-60s). Be explicit: NOT suggesting 'call Disney' or chase giant partnerships unprepared. Only reason to mention big industry shifts: show world values compressed creative intelligence. Smart move for Alithea: build bridgeable asset (curriculum, catalog, pilot partnership). So if something bigger becomes relevant, you're ready and credible. Keep dreams rational." data-timing="45-60s">
-            <div class="slide-number">9 / 11</div>
-            <h2>Guardrails</h2>
-            <div class="content" style="max-width: 900px; margin: 0 auto;">
-                <div style="background: rgba(45, 212, 191, 0.05); border-left: 4px solid #2dd4bf; padding: 40px; border-radius: 8px; margin: 40px 0;">
-                    <p style="font-size: 26px; line-height: 1.6; margin-bottom: 30px;">
-                        <strong>Not suggesting:</strong> "Call Disney/Pixar tomorrow!!!"
-                    </p>
-                    <p style="font-size: 26px; line-height: 1.6; margin-bottom: 30px;">
-                        <strong>Instead proposing:</strong> Invest in building bridgeable assets
-                    </p>
-                    <p style="font-size: 22px; line-height: 1.6; color: #999;">
-                        So if something bigger becomes relevant, you're ready and credible
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 10: Wedge Proposal -->
-        <div class="slide" data-notes="Wedge proposal (~2-3 minutes). Low-risk, high-leverage Phase 1. Three options. OPTION 1 (recommended): Ops + Knowledge Backbone MVP — 30 days. Single source of truth: contacts, partners, donors, alumni, works, artifacts. Grant/partnership tracking dashboard. Lightweight artifact intake with permissions. Outcome: clarity, less scramble, increased capacity, enables everything else. Option 2: WSU pilot workshop (embodied acting for mocap). Option 3: Artifact permissions sprint (10-20 key artifacts). Emphasize Option 1 enables 2 and 3 without stress." data-timing="2-3m">
-            <div class="slide-number">10 / 11</div>
-            <h2>The Wedge Proposal</h2>
-            <p style="font-size: 22px; color: #999; text-align: center; margin-bottom: 40px;">Phase 1: Low-risk, high-leverage starting point</p>
-            <div class="wedge-options">
-                <div class="option-card recommended">
-                    <div class="option-number">OPTION 1 — RECOMMENDED</div>
-                    <div class="option-title">Ops + Knowledge Backbone MVP</div>
-                    <div class="option-timeline">30 days</div>
-                    <div class="option-desc">
-                        Single source of truth<br>
-                        Grant/partnership dashboard<br>
-                        Artifact intake process<br><br>
-                        <strong style="color: #2dd4bf;">Enables all other horizons</strong>
-                    </div>
-                </div>
-                <div class="option-card">
-                    <div class="option-number">OPTION 2</div>
-                    <div class="option-title">WSU / Shocker Studios Pilot</div>
-                    <div class="option-timeline">30-60 days</div>
-                    <div class="option-desc">
-                        Workshop: "Embodied Acting for Motion Capture"<br>
-                        With documentation + feedback<br><br>
-                        Proof: does this lane have pull?
-                    </div>
-                </div>
-                <div class="option-card">
-                    <div class="option-number">OPTION 3</div>
-                    <div class="option-title">Artifact + Permissions Sprint</div>
-                    <div class="option-timeline">30-60 days</div>
-                    <div class="option-desc">
-                        10-20 key artifacts<br>
-                        Permission status + metadata<br><br>
-                        Seed for foundation fundraising
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 11: What I Need + Close -->
-        <div class="slide" data-notes="What I need + close (~1.5-2 minutes). For any wedge to work, need: (1) Point person for weekly input/decisions, (2) Realistic time commitment (60-90 min/week), (3) Access to existing materials (folders/archives/contacts, even if messy), (4) Agreement on definition of done (what does success look like 30/60/90 days?). Next step isn't big commitment — single working session. I ask questions, we identify what exists, pick the wedge. Then come back with: 30/60/90/365 roadmap, dashboard spec, two pilot options. Close with: How does this feel? What feels exciting? What feels risky or heavy?" data-timing="1.5-2m">
-            <div class="slide-number">11 / 11</div>
-            <h2>What I Need From You</h2>
-            <div class="content">
-                <ul class="bullets small-bullets" style="margin-bottom: 50px;">
-                    <li>A <span class="accent">point person</span> — weekly input and decisions</li>
-                    <li>Realistic <span class="accent">time commitment</span> — 60-90 min/week</li>
-                    <li><span class="accent">Access</span> to existing materials (even if messy)</li>
-                    <li>Agreement on <span class="accent">"definition of done"</span> for 30/60/90 days</li>
-                </ul>
-                <div style="background: rgba(45, 212, 191, 0.08); border: 2px solid rgba(45, 212, 191, 0.3); padding: 35px; border-radius: 12px; text-align: center;">
-                    <p style="font-size: 26px; line-height: 1.6; margin-bottom: 20px;">
-                        <strong>Easy Next Step:</strong> One working session
-                    </p>
-                    <p style="font-size: 20px; color: #999; line-height: 1.6;">
-                        I ask questions → we identify what exists → pick the wedge<br><br>
-                        Then: 30/60/90/365 roadmap + dashboard spec + pilot options
-                    </p>
-                </div>
-                <p style="font-size: 24px; text-align: center; color: #2dd4bf; margin-top: 40px; font-style: italic;">
-                    How does this feel? What feels exciting? What feels risky?
+        <!-- SLIDE 4: THESIS -->
+        <div class="slide slide-thesis" data-notes="The thesis (~1 minute). Simple: Alithea has unique movement grammar — teachable, transferable embodied storytelling language. Fastest way to unlock opportunities: build lightweight infrastructure that captures it. NOT bureaucracy. NOT turning artists into admins. Infrastructure that runs in background and creates optionality." data-timing="1m">
+            <div class="slide-inner">
+                <div class="slide-marker">04 — 11</div>
+                <h2>The Thesis</h2>
+                <p class="thesis-quote">
+                    Alithea has a uniquely human expressive framework — and the fastest way to unlock new opportunities is to build <span class="accent">lightweight infrastructure</span> that captures it
                 </p>
+                <p class="thesis-footnote">Not bureaucracy. Infrastructure that creates optionality.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: HORIZONS OVERVIEW -->
+        <div class="slide slide-horizons" data-notes="Three horizons intro (~30s). These are NOT promises — they're possible directions once foundation is built. Preview the three lanes before diving into each." data-timing="30s">
+            <div class="slide-inner">
+                <div class="slide-marker">05 — 11</div>
+                <div class="horizons-intro">
+                    <h2>Three Rational Trajectories</h2>
+                    <p>Possible directions once the foundation is built</p>
+                </div>
+                <div class="horizons-grid">
+                    <div class="horizon-preview">
+                        <div class="horizon-letter">A</div>
+                        <h3>Organization<br>of Record</h3>
+                    </div>
+                    <div class="horizon-preview">
+                        <div class="horizon-letter">B</div>
+                        <h3>Movement-Intelligence<br>Supplier</h3>
+                    </div>
+                    <div class="horizon-preview">
+                        <div class="horizon-letter">C</div>
+                        <h3>Education +<br>Embodiment Engine</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: HORIZON A -->
+        <div class="slide slide-horizon-detail" data-notes="Horizon A detail (~45s). Preservation lane: gathering artifacts, documentation, lineage. Becoming credible steward of ensemble/movement theatre tradition that lacks clear organizational home compared to other forms." data-timing="45s">
+            <div class="slide-inner">
+                <div class="slide-marker">06 — 11</div>
+                <div class="horizon-visual">
+                    <div class="horizon-icon horizon-a-icon">
+                        <div class="archive-line"></div>
+                        <div class="archive-line"></div>
+                        <div class="archive-line"></div>
+                        <div class="archive-line"></div>
+                        <div class="archive-line"></div>
+                        <div class="archive-line"></div>
+                    </div>
+                </div>
+                <div class="horizon-content">
+                    <div class="horizon-label-inline">Horizon A</div>
+                    <h2>Organization of Record</h2>
+                    <p>Preservation: gathering artifacts, documentation, and mapping lineage.</p>
+                    <p>Becoming the credible steward of ensemble movement theatre tradition.</p>
+                    <p class="muted"><span class="accent">Authority</span> in a field that currently lacks a clear institutional home.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: HORIZON B -->
+        <div class="slide slide-horizon-detail" data-notes="Horizon B detail (~45s). Applied partnerships: motion capture acting, XR/AR, robotics 'human feel', animation, game studios, advertising. Places needing believable embodied expression. Doesn't mean abandoning art — means translating art into training and collaboration capability." data-timing="45s">
+            <div class="slide-inner">
+                <div class="slide-marker">07 — 11</div>
+                <div class="horizon-visual">
+                    <div class="horizon-icon horizon-b-icon">
+                        <div class="connection-node"></div>
+                        <div class="connection-node"></div>
+                        <div class="connection-node"></div>
+                        <div class="connection-node"></div>
+                        <div class="connection-node"></div>
+                        <div class="connection-line"></div>
+                        <div class="connection-line"></div>
+                        <div class="connection-line"></div>
+                        <div class="connection-line"></div>
+                    </div>
+                </div>
+                <div class="horizon-content">
+                    <div class="horizon-label-inline">Horizon B</div>
+                    <h2>Movement-Intelligence Supplier</h2>
+                    <p>Applied partnerships: motion capture, XR/AR, robotics, animation, games.</p>
+                    <p>Translating the art into a <span class="accent">training and collaboration capability</span>.</p>
+                    <p class="muted">Not abandoning art — expanding its reach into new domains.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: HORIZON C -->
+        <div class="slide slide-horizon-detail" data-notes="Horizon C detail (~45s). Scaling existing education work — potentially wellness-adjacent track. Key difference: outcomes and curriculum structure so schools/institutions can adopt repeatedly. Repeatable, measurable, fundable." data-timing="45s">
+            <div class="slide-inner">
+                <div class="slide-marker">08 — 11</div>
+                <div class="horizon-visual">
+                    <div class="horizon-icon horizon-c-icon">
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                    </div>
+                </div>
+                <div class="horizon-content">
+                    <div class="horizon-label-inline">Horizon C</div>
+                    <h2>Education + Embodiment Engine</h2>
+                    <p>Scaling what you already do — with <span class="accent">outcomes and curriculum structure</span>.</p>
+                    <p>Schools and institutions can adopt it repeatedly, reliably.</p>
+                    <p class="muted">Repeatable. Measurable. Fundable.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: GUARDRAILS -->
+        <div class="slide slide-guardrails" data-notes="Don't call Disney paragraph (~45-60s). Be explicit: NOT suggesting 'call Disney' or chase giant partnerships unprepared. Only reason to mention big industry shifts: show world values compressed creative intelligence. Smart move for Alithea: build bridgeable asset (curriculum, catalog, pilot partnership). So if something bigger becomes relevant, you're ready and credible. Keep dreams rational." data-timing="45-60s">
+            <div class="slide-inner">
+                <div class="slide-marker">09 — 11</div>
+                <h2>Guardrails</h2>
+                <div class="guardrail-box">
+                    <div class="guardrail-row">
+                        <span class="guardrail-label">Not suggesting</span>
+                        <span class="guardrail-text">"Call Disney/Pixar tomorrow"</span>
+                    </div>
+                    <div class="guardrail-row">
+                        <span class="guardrail-label">Instead</span>
+                        <span class="guardrail-text highlight">Invest in building bridgeable assets</span>
+                    </div>
+                    <div class="guardrail-row">
+                        <span class="guardrail-label">So that</span>
+                        <span class="guardrail-text">If something bigger becomes relevant, you're ready and credible</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: WEDGE PROPOSAL -->
+        <div class="slide slide-wedge" data-notes="Wedge proposal (~2-3 minutes). Low-risk, high-leverage Phase 1. Three options. OPTION 1 (recommended): Ops + Knowledge Backbone MVP — 30 days. Single source of truth: contacts, partners, donors, alumni, works, artifacts. Grant/partnership tracking dashboard. Lightweight artifact intake with permissions. Outcome: clarity, less scramble, increased capacity, enables everything else. Option 2: WSU pilot workshop (embodied acting for mocap). Option 3: Artifact permissions sprint (10-20 key artifacts). Emphasize Option 1 enables 2 and 3 without stress." data-timing="2-3m">
+            <div class="slide-inner">
+                <div class="slide-marker">10 — 11</div>
+                <div class="wedge-header">
+                    <h2>The Wedge Proposal</h2>
+                    <p>Phase 1: Low-risk, high-leverage starting point</p>
+                </div>
+                <div class="options-grid">
+                    <div class="option-card recommended">
+                        <div class="option-number">Option 1 — Recommended</div>
+                        <div class="option-title">Ops + Knowledge Backbone MVP</div>
+                        <div class="option-timeline">30 days</div>
+                        <p class="option-details">
+                            Single source of truth for contacts, partners, alumni, works, artifacts.<br><br>
+                            Grant + partnership tracking dashboard.<br><br>
+                            Lightweight artifact intake process.
+                            <span class="option-highlight">Enables all other horizons</span>
+                        </p>
+                    </div>
+                    <div class="option-card">
+                        <div class="option-number">Option 2</div>
+                        <div class="option-title">WSU / Shocker Studios Pilot</div>
+                        <div class="option-timeline">30-60 days</div>
+                        <p class="option-details">
+                            Workshop: "Embodied Acting for Motion Capture"<br><br>
+                            With documentation + feedback loop.<br><br>
+                            <span class="option-highlight">Test: does this lane have pull?</span>
+                        </p>
+                    </div>
+                    <div class="option-card">
+                        <div class="option-number">Option 3</div>
+                        <div class="option-title">Artifact + Permissions Sprint</div>
+                        <div class="option-timeline">30-60 days</div>
+                        <p class="option-details">
+                            10-20 key artifacts with permission status + metadata.<br><br>
+                            <span class="option-highlight">Seed for foundation fundraising</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: CLOSE -->
+        <div class="slide slide-close" data-notes="What I need + close (~1.5-2 minutes). For any wedge to work, need: (1) Point person for weekly input/decisions, (2) Realistic time commitment (60-90 min/week), (3) Access to existing materials (folders/archives/contacts, even if messy), (4) Agreement on definition of done (what does success look like 30/60/90 days?). Next step isn't big commitment — single working session. I ask questions, we identify what exists, pick the wedge. Then come back with: 30/60/90/365 roadmap, dashboard spec, two pilot options. Close with: How does this feel? What feels exciting? What feels risky or heavy?" data-timing="1.5-2m">
+            <div class="slide-inner">
+                <div class="slide-marker">11 — 11</div>
+                <div class="content-left">
+                    <h2>What I Need From You</h2>
+                    <ul class="needs-list">
+                        <li><span class="bullet">→</span> A <span class="accent">point person</span> for weekly input and decisions</li>
+                        <li><span class="bullet">→</span> Realistic <span class="accent">time commitment</span> — 60-90 min/week</li>
+                        <li><span class="bullet">→</span> <span class="accent">Access</span> to existing materials (even if messy)</li>
+                        <li><span class="bullet">→</span> Agreement on <span class="accent">"definition of done"</span> for 30/60/90 days</li>
+                    </ul>
+                </div>
+                <div class="content-right">
+                    <div class="next-step-box">
+                        <h3>Easy Next Step</h3>
+                        <p>One working session.</p>
+                        <p>I ask questions → we map what exists → pick the wedge.</p>
+                        <p>Then: 30/60/90/365 roadmap + dashboard spec + pilot options.</p>
+                        <p class="closing-question">How does this feel?<br>What feels exciting? What feels risky?</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="speaker-notes" id="speakerNotes">
-        <div class="notes-content">
-            <div class="notes-timing"></div>
-            <div class="notes-text"></div>
-        </div>
+        <div class="notes-timing"></div>
+        <div class="notes-text"></div>
     </div>
 
-    <div class="controls">
-        <button onclick="previousSlide()" id="prevBtn">← Previous</button>
-        <button onclick="nextSlide()" id="nextBtn">Next →</button>
+    <div class="nav-container">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Prev</button>
+        <div class="nav-progress" id="progressDots"></div>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
     </div>
 
     <script>
-        let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
-        const notesPanel = document.getElementById('speakerNotes');
+        let currentSlide = 0;
 
-        function showSlide(n) {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (n + totalSlides) % totalSlides;
-            slides[currentSlide].classList.add('active');
-            
-            updateNotes();
-            updateButtons();
+        // Build progress dots
+        const progressContainer = document.getElementById('progressDots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            progressContainer.appendChild(dot);
         }
 
-        function updateNotes() {
-            const currentSlideEl = slides[currentSlide];
-            const notes = currentSlideEl.getAttribute('data-notes');
-            const timing = currentSlideEl.getAttribute('data-timing');
-            
-            document.querySelector('.notes-timing').textContent = `Timing: ${timing}`;
-            document.querySelector('.notes-text').textContent = notes;
-        }
+        function updateSlide() {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentSlide);
+            });
 
-        function updateButtons() {
+            document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
+
             document.getElementById('prevBtn').disabled = currentSlide === 0;
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+
+            updateNotes();
         }
 
         function nextSlide() {
             if (currentSlide < totalSlides - 1) {
-                showSlide(currentSlide + 1);
+                currentSlide++;
+                updateSlide();
             }
         }
 
-        function previousSlide() {
+        function prevSlide() {
             if (currentSlide > 0) {
-                showSlide(currentSlide - 1);
+                currentSlide--;
+                updateSlide();
             }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        function updateNotes() {
+            const slide = slides[currentSlide];
+            const timing = slide.dataset.timing || '';
+            const notes = slide.dataset.notes || '';
+            document.querySelector('.notes-timing').textContent = timing ? `Timing: ${timing}` : '';
+            document.querySelector('.notes-text').textContent = notes;
         }
 
         function toggleNotes() {
-            notesPanel.classList.toggle('visible');
+            document.getElementById('speakerNotes').classList.toggle('visible');
         }
 
         // Keyboard navigation
@@ -676,7 +1781,7 @@
                 nextSlide();
             } else if (e.key === 'ArrowLeft') {
                 e.preventDefault();
-                previousSlide();
+                prevSlide();
             } else if (e.key === 'n' || e.key === 'N') {
                 e.preventDefault();
                 toggleNotes();
@@ -685,7 +1790,6 @@
 
         // Initialize
         updateNotes();
-        updateButtons();
     </script>
 </body>
 </html>
