@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea Creations — Scenario Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #121218;
+            --bg-surface-hover: #1c1c24;
+            --border-color: #272730;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            
+            /* Curated harmonies for performing arts theme */
+            --accent-purple: #8b5cf6;
+            --accent-purple-glow: rgba(139, 92, 246, 0.15);
+            --accent-indigo: #6366f1;
+            --accent-gold: #f59e0b;
+            --accent-blue: #0ea5e9;
+            --accent-emerald: #10b981;
+            --accent-coral: #f43f5e;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Layout Grid */
+        .app-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Control Panel */
+        .control-panel {
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            padding: 24px;
+            overflow-y: auto;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-title-group h1 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-title-group p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-purple);
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-section {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .control-label {
+            color: var(--text-primary);
+        }
+
+        .control-value {
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--accent-indigo);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .slider-input {
+            width: 100%;
+            height: 5px;
+            background: var(--border-color);
+            outline: none;
+            border-radius: 3px;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+            transition: transform 0.1s ease;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+        .slider-hint {
+            font-size: 10px;
+            color: var(--text-secondary);
+            opacity: 0.7;
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        /* Main Content Panel */
+        .main-panel {
+            padding: 32px;
+            overflow-y: auto;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Header Options */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .scenario-toggles {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .scenario-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .scenario-btn.active {
+            color: white;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+        }
+
+        /* KPI Dashboard Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-color, var(--accent-purple));
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-family: var(--font-display);
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .kpi-detail {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Charts Section */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .chart-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .chart-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Data Details Grid */
+        .details-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .details-table th, .details-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .details-table th {
+            font-family: var(--font-display);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .details-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .details-table tr.total-row {
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .details-table tr.total-row td {
+            font-family: var(--font-display);
+            color: var(--text-primary);
+            border-top: 2px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-purple { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
+        .badge-indigo { background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo); }
+        .badge-gold { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); }
+        .badge-blue { background: rgba(14, 165, 233, 0.15); color: var(--accent-blue); }
+        .badge-emerald { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); }
+        .badge-coral { background: rgba(244, 63, 94, 0.15); color: var(--accent-coral); }
+
+        /* General layout additions */
+        .indicator-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-green { background-color: var(--accent-emerald); box-shadow: 0 0 8px var(--accent-emerald); }
+        .dot-red { background-color: var(--accent-coral); box-shadow: 0 0 8px var(--accent-coral); }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            .control-panel {
+                max-height: none;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .main-panel {
+                max-height: none;
+            }
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            .kpi-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar controls -->
+        <aside class="control-panel">
+            <div class="brand-header">
+                <div class="brand-logo">A</div>
+                <div class="brand-title-group">
+                    <h1>Alithea Creations</h1>
+                    <p>Strategic Financial Modeler</p>
+                </div>
+            </div>
+
+            <!-- Performance Segment -->
+            <div class="control-section">
+                <h3 class="section-title">Touring Performances</h3>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Shows per Year</span>
+                        <span class="control-value" id="val-shows-touring">8</span>
+                    </div>
+                    <input type="range" class="slider-input" id="shows-touring" min="0" max="20" value="8">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Avg Booking Fee</span>
+                        <span class="control-value" id="val-fee-touring">$2,500</span>
+                    </div>
+                    <input type="range" class="slider-input" id="fee-touring" min="500" max="10000" step="100" value="2500">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Cast & Crew Fee / Show</span>
+                        <span class="control-value" id="val-touring-cast-crew">$1,200</span>
+                    </div>
+                    <input type="range" class="slider-input" id="touring-cast-crew" min="200" max="4000" step="100" value="1200">
+                    <div class="slider-hint">Per-show performers, stage manager, tech</div>
+                </div>
+            </div>
+
+            <!-- Local Performance Segment -->
+            <div class="control-section">
+                <h3 class="section-title">Local Performances</h3>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Shows per Year</span>
+                        <span class="control-value" id="val-shows-local">6</span>
+                    </div>
+                    <input type="range" class="slider-input" id="shows-local" min="0" max="20" value="6">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Avg Booking Fee</span>
+                        <span class="control-value" id="val-fee-local">$800</span>
+                    </div>
+                    <input type="range" class="slider-input" id="fee-local" min="200" max="3000" step="50" value="800">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Cast & Crew Fee / Show</span>
+                        <span class="control-value" id="val-local-cast-crew">$400</span>
+                    </div>
+                    <input type="range" class="slider-input" id="local-cast-crew" min="100" max="2000" step="50" value="400">
+                    <div class="slider-hint">Wichita-area performers, smaller crew</div>
+                </div>
+            </div>
+
+            <!-- Education / Outreach Segment -->
+            <div class="control-section">
+                <h3 class="section-title">Education & Workshops</h3>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Workshops per Year</span>
+                        <span class="control-value" id="val-workshops">12</span>
+                    </div>
+                    <input type="range" class="slider-input" id="workshops" min="0" max="35" value="12">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Avg Workshop Fee</span>
+                        <span class="control-value" id="val-fee-workshop">$500</span>
+                    </div>
+                    <input type="range" class="slider-input" id="fee-workshop" min="100" max="1500" step="25" value="500">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Residencies per Year</span>
+                        <span class="control-value" id="val-residencies">1</span>
+                    </div>
+                    <input type="range" class="slider-input" id="residencies" min="0" max="5" value="1">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Avg Residency Fee</span>
+                        <span class="control-value" id="val-fee-residency">$5,000</span>
+                    </div>
+                    <input type="range" class="slider-input" id="fee-residency" min="1000" max="15000" step="500" value="5000">
+                </div>
+            </div>
+
+            <!-- Speculative Revenue Stream -->
+            <div class="control-section" style="border-color: rgba(99, 102, 241, 0.2);">
+                <h3 class="section-title" style="color: var(--accent-indigo);">Movement Consulting</h3>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Consulting Hours/Mo</span>
+                        <span class="control-value" id="val-consulting-hours">0</span>
+                    </div>
+                    <input type="range" class="slider-input" id="consulting-hours" min="0" max="40" value="0">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Hourly Consultation Rate</span>
+                        <span class="control-value" id="val-consulting-rate">$150</span>
+                    </div>
+                    <input type="range" class="slider-input" id="consulting-rate" min="50" max="300" step="10" value="150">
+                    <div class="slider-hint">Movement, artistic, educational, or mocap</div>
+                </div>
+            </div>
+
+            <!-- Grants & Core Expenses -->
+            <div class="control-section">
+                <h3 class="section-title">Grants & Fixed Overheads</h3>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Grants & Donations</span>
+                        <span class="control-value" id="val-grants">$0</span>
+                    </div>
+                    <input type="range" class="slider-input" id="grants" min="0" max="40000" step="500" value="0">
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Monthly Admin & Staff</span>
+                        <span class="control-value" id="val-admin-staff">$3,000</span>
+                    </div>
+                    <input type="range" class="slider-input" id="admin-staff" min="0" max="6000" step="100" value="3000">
+                    <div class="slider-hint">Sabrina ops + Zoe admin + Nick direction</div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Monthly Operating Overhead</span>
+                        <span class="control-value" id="val-fixed-costs">$316</span>
+                    </div>
+                    <input type="range" class="slider-input" id="fixed-costs" min="100" max="2000" step="50" value="316">
+                    <div class="slider-hint">Insurance, hosting, phone, storage, software</div>
+                </div>
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-label">Production & Travel / Show</span>
+                        <span class="control-value" id="val-var-show">$400</span>
+                    </div>
+                    <input type="range" class="slider-input" id="var-show" min="0" max="1500" step="50" value="400">
+                    <div class="slider-hint">Per-show production, travel, costumes</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main workspace -->
+        <main class="main-panel">
+            <header class="main-header">
+                <h2 class="page-title">Interactive Financial Dashboard</h2>
+                <div class="scenario-toggles">
+                    <button class="scenario-btn active" id="btn-base" onclick="loadScenario('base')">Base Case</button>
+                    <button class="scenario-btn" id="btn-growth" onclick="loadScenario('growth')">Growth Case</button>
+                    <button class="scenario-btn" id="btn-conservative" onclick="loadScenario('conservative')">Conservative</button>
+                    <button class="scenario-btn" id="btn-consulting" onclick="loadScenario('consulting')">Consulting Pilot</button>
+                </div>
+            </header>
+
+            <!-- KPIs -->
+            <div class="kpi-row">
+                <div class="kpi-card" style="--accent-color: var(--accent-indigo);">
+                    <div class="kpi-label">Annual Revenue</div>
+                    <div class="kpi-value" id="kpi-revenue">$0</div>
+                    <div class="kpi-detail">Earned + contributed streams</div>
+                </div>
+                <div class="kpi-card" style="--accent-color: var(--accent-coral);">
+                    <div class="kpi-label">Annual Expenses</div>
+                    <div class="kpi-value" id="kpi-expenses">$0</div>
+                    <div class="kpi-detail">Personnel + operating overhead</div>
+                </div>
+                <div class="kpi-card" style="--accent-color: var(--accent-emerald);" id="card-profit">
+                    <div class="kpi-label">Net Profit/Loss</div>
+                    <div class="kpi-value" id="kpi-net">$0</div>
+                    <div class="kpi-detail" id="net-detail">Annual margin</div>
+                </div>
+                <div class="kpi-card" style="--accent-color: var(--accent-blue);" id="card-runway">
+                    <div class="kpi-label">Financial Runway</div>
+                    <div class="kpi-value" id="kpi-runway">0 Mos</div>
+                    <div class="kpi-detail" id="runway-detail">Starting from $10k cash</div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-row">
+                <!-- 12-Month Projection -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title">12-Month Rolling Cash Flow</h3>
+                            <p class="chart-subtitle">Adjusted for seasonal touring cycles (peaks in spring & fall)</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="cashflowChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Revenue Mix -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title">Annual Revenue Mix</h3>
+                            <p class="chart-subtitle">Distribution by category</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueMixChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table & Strategy -->
+            <div class="details-card">
+                <div class="chart-header" style="margin-bottom: 18px;">
+                    <div>
+                        <h3 class="chart-title">Financial Breakdown Summary</h3>
+                        <p class="chart-subtitle">Line-item overview of annual values</p>
+                    </div>
+                </div>
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Revenue / Expense Line Item</th>
+                            <th>Category</th>
+                            <th>Unit Economics / Base Calculation</th>
+                            <th style="text-align: right;">Annual Total</th>
+                            <th style="text-align: right;">% Margin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripting logic -->
+    <script>
+        // Seasonality multipliers from spreadsheet spec
+        const SEASONALITY_MULTIPLIERS = [
+            0.7, // Jan
+            0.8, // Feb
+            1.0, // Mar
+            1.2, // Apr
+            1.3, // May
+            1.0, // Jun
+            0.8, // Jul
+            0.9, // Aug
+            1.2, // Sep
+            1.4, // Oct
+            1.1, // Nov
+            0.6  // Dec
+        ];
+
+        const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        // Scenario Presets (updated to include staff and separate variable performer fees)
+        const SCENARIOS = {
+            base: {
+                showsTouring: 8, feeTouring: 2500, touringCastCrew: 1200,
+                showsLocal: 6, feeLocal: 800, localCastCrew: 400,
+                workshops: 12, feeWorkshop: 500,
+                residencies: 1, feeResidency: 5000,
+                consultingHours: 0, consultingRate: 150,
+                grants: 0, adminStaff: 3000, fixedCosts: 316, varShow: 400
+            },
+            growth: {
+                showsTouring: 12, feeTouring: 3000, touringCastCrew: 1500,
+                showsLocal: 8, feeLocal: 1000, localCastCrew: 500,
+                workshops: 18, feeWorkshop: 600,
+                residencies: 2, feeResidency: 6000,
+                consultingHours: 0, consultingRate: 150,
+                grants: 10000, adminStaff: 3000, fixedCosts: 350, varShow: 500
+            },
+            conservative: {
+                showsTouring: 4, feeTouring: 2000, touringCastCrew: 1000,
+                showsLocal: 4, feeLocal: 600, localCastCrew: 300,
+                workshops: 6, feeWorkshop: 400,
+                residencies: 0, feeResidency: 0,
+                consultingHours: 0, consultingRate: 150,
+                grants: 0, adminStaff: 3000, fixedCosts: 316, varShow: 300
+            },
+            consulting: {
+                showsTouring: 8, feeTouring: 2500, touringCastCrew: 1200,
+                showsLocal: 6, feeLocal: 800, localCastCrew: 400,
+                workshops: 12, feeWorkshop: 500,
+                residencies: 1, feeResidency: 5000,
+                consultingHours: 15, consultingRate: 150,
+                grants: 5000, adminStaff: 3000, fixedCosts: 316, varShow: 400
+            }
+        };
+
+        // DOM elements
+        const sliders = {
+            showsTouring: document.getElementById('shows-touring'),
+            feeTouring: document.getElementById('fee-touring'),
+            touringCastCrew: document.getElementById('touring-cast-crew'),
+            showsLocal: document.getElementById('shows-local'),
+            feeLocal: document.getElementById('fee-local'),
+            localCastCrew: document.getElementById('local-cast-crew'),
+            workshops: document.getElementById('workshops'),
+            feeWorkshop: document.getElementById('fee-workshop'),
+            residencies: document.getElementById('residencies'),
+            feeResidency: document.getElementById('fee-residency'),
+            consultingHours: document.getElementById('consulting-hours'),
+            consultingRate: document.getElementById('consulting-rate'),
+            grants: document.getElementById('grants'),
+            adminStaff: document.getElementById('admin-staff'),
+            fixedCosts: document.getElementById('fixed-costs'),
+            varShow: document.getElementById('var-show')
+        };
+
+        const values = {
+            showsTouring: document.getElementById('val-shows-touring'),
+            feeTouring: document.getElementById('val-fee-touring'),
+            touringCastCrew: document.getElementById('val-touring-cast-crew'),
+            showsLocal: document.getElementById('val-shows-local'),
+            feeLocal: document.getElementById('val-fee-local'),
+            localCastCrew: document.getElementById('val-local-cast-crew'),
+            workshops: document.getElementById('val-workshops'),
+            feeWorkshop: document.getElementById('val-fee-workshop'),
+            residencies: document.getElementById('val-residencies'),
+            feeResidency: document.getElementById('val-fee-residency'),
+            consultingHours: document.getElementById('val-consulting-hours'),
+            consultingRate: document.getElementById('val-consulting-rate'),
+            grants: document.getElementById('val-grants'),
+            adminStaff: document.getElementById('val-admin-staff'),
+            fixedCosts: document.getElementById('val-fixed-costs'),
+            varShow: document.getElementById('val-var-show')
+        };
+
+        // Charts handles
+        let cashflowChart = null;
+        let revenueMixChart = null;
+
+        // Formatter
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            initCharts();
+            updateDashboard();
+        });
+
+        function setupEventListeners() {
+            Object.keys(sliders).forEach(key => {
+                sliders[key].addEventListener('input', (e) => {
+                    // Update label
+                    let val = parseFloat(e.target.value);
+                    if (key.includes('fee') || key === 'grants' || key === 'fixedCosts' || key === 'varShow' || key === 'consultingRate' || key === 'touringCastCrew' || key === 'localCastCrew' || key === 'adminStaff') {
+                        values[key].innerText = fmt.format(val);
+                    } else {
+                        values[key].innerText = val;
+                    }
+                    
+                    // Remove active from preset buttons if user edits manually
+                    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+                    
+                    updateDashboard();
+                });
+            });
+        }
+
+        function loadScenario(preset) {
+            // Active button styling
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${preset}`).classList.add('active');
+
+            const config = SCENARIOS[preset];
+            Object.keys(config).forEach(key => {
+                sliders[key].value = config[key];
+                
+                // Update label text
+                let val = config[key];
+                if (key.includes('fee') || key === 'grants' || key === 'fixedCosts' || key === 'varShow' || key === 'consultingRate' || key === 'touringCastCrew' || key === 'localCastCrew' || key === 'adminStaff') {
+                    values[key].innerText = fmt.format(val);
+                } else {
+                    values[key].innerText = val;
+                }
+            });
+
+            updateDashboard();
+        }
+
+        function getInputs() {
+            return {
+                showsTouring: parseInt(sliders.showsTouring.value),
+                feeTouring: parseFloat(sliders.feeTouring.value),
+                touringCastCrew: parseFloat(sliders.touringCastCrew.value),
+                showsLocal: parseInt(sliders.showsLocal.value),
+                feeLocal: parseFloat(sliders.feeLocal.value),
+                localCastCrew: parseFloat(sliders.localCastCrew.value),
+                workshops: parseInt(sliders.workshops.value),
+                feeWorkshop: parseFloat(sliders.feeWorkshop.value),
+                residencies: parseInt(sliders.residencies.value),
+                feeResidency: parseFloat(sliders.feeResidency.value),
+                consultingHours: parseInt(sliders.consultingHours.value),
+                consultingRate: parseFloat(sliders.consultingRate.value),
+                grants: parseFloat(sliders.grants.value),
+                adminStaff: parseFloat(sliders.adminStaff.value),
+                fixedCosts: parseFloat(sliders.fixedCosts.value),
+                varShow: parseFloat(sliders.varShow.value)
+            };
+        }
+
+        function calculateMetrics() {
+            const inputs = getInputs();
+
+            // Annual Totals
+            const revTouring = inputs.showsTouring * inputs.feeTouring;
+            const revLocal = inputs.showsLocal * inputs.feeLocal;
+            const revWorkshops = inputs.workshops * inputs.feeWorkshop;
+            const revResidencies = inputs.residencies * inputs.feeResidency;
+            const revConsulting = (inputs.consultingHours * 12) * inputs.consultingRate;
+            const revGrants = inputs.grants;
+            const totalRevenue = revTouring + revLocal + revWorkshops + revResidencies + revConsulting + revGrants;
+
+            // Expenses breakdown
+            const expAdminStaff = inputs.adminStaff * 12;
+            const expOperatingOverhead = inputs.fixedCosts * 12;
+            
+            const expTouringCastCrew = inputs.showsTouring * inputs.touringCastCrew;
+            const expLocalCastCrew = inputs.showsLocal * inputs.localCastCrew;
+            
+            const totalShows = inputs.showsTouring + inputs.showsLocal;
+            const expProductionTravel = totalShows * inputs.varShow;
+            
+            const totalExpenses = expAdminStaff + expOperatingOverhead + expTouringCastCrew + expLocalCastCrew + expProductionTravel;
+
+            const netProfit = totalRevenue - totalExpenses;
+            
+            // Monthly calculations incorporating seasonality
+            const monthlyRevenue = [];
+            const monthlyExpenses = [];
+            const monthlyNet = [];
+            const cumulativeBalance = [];
+            
+            let currentBalance = 10000; // Starting cash of $10,000
+
+            // Standard monthly distributions before seasonality
+            const avgTouringMonth = revTouring / 12;
+            const avgLocalMonth = revLocal / 12;
+            const avgWorkshopsMonth = revWorkshops / 12;
+            
+            // Fixed streams
+            const monthlyFixedPersonnel = inputs.adminStaff;
+            const monthlyFixedOverhead = inputs.fixedCosts;
+            const monthlyConsulting = revConsulting / 12;
+            
+            // Variable performer streams (tied to tour dates seasonality)
+            const avgTouringCastCrewMonth = expTouringCastCrew / 12;
+            const avgLocalCastCrewMonth = expLocalCastCrew / 12;
+            const avgProductionTravelMonth = expProductionTravel / 12;
+
+            for (let m = 0; m < 12; m++) {
+                const mult = SEASONALITY_MULTIPLIERS[m];
+                
+                // Seasonal revenue
+                let rev = (avgTouringMonth * mult) + (avgLocalMonth * mult) + (avgWorkshopsMonth * mult);
+                rev += monthlyConsulting;
+                
+                // Add residency spikes
+                if (m === 2 || m === 9) { // March or October
+                    rev += revResidencies / 2;
+                }
+                // Add Grant payout spike
+                if (m === 5) { // June
+                    rev += revGrants;
+                }
+
+                // Seasonal expenses (personnel + variable costs correlate to performance seasonality)
+                const showMultiplier = mult;
+                const monthlyVariablePerformer = (avgTouringCastCrewMonth * showMultiplier) + (avgLocalCastCrewMonth * showMultiplier);
+                const monthlyVariableProdTravel = avgProductionTravelMonth * showMultiplier;
+                
+                const exp = monthlyFixedPersonnel + monthlyFixedOverhead + monthlyVariablePerformer + monthlyVariableProdTravel;
+
+                monthlyRevenue.push(rev);
+                monthlyExpenses.push(exp);
+                
+                const net = rev - exp;
+                monthlyNet.push(net);
+                
+                currentBalance += net;
+                cumulativeBalance.push(currentBalance);
+            }
+
+            // Runway calculation
+            let runwayText = "";
+            let runwayColor = "dot-green";
+            if (netProfit >= 0) {
+                runwayText = "Infinite (Net Positive)";
+            } else {
+                const avgBurn = Math.abs(netProfit) / 12;
+                const months = 10000 / avgBurn;
+                runwayText = months.toFixed(1) + " Mos";
+                if (months < 3) {
+                    runwayColor = "dot-red";
+                }
+            }
+
+            return {
+                inputs,
+                revTouring, revLocal, revWorkshops, revResidencies, revConsulting, revGrants,
+                totalRevenue, expAdminStaff, expOperatingOverhead, expTouringCastCrew, expLocalCastCrew, expProductionTravel, totalExpenses, netProfit,
+                monthlyNet, cumulativeBalance, runwayText, runwayColor
+            };
+        }
+
+        function updateDashboard() {
+            const metrics = calculateMetrics();
+
+            // Set KPI Labels
+            document.getElementById('kpi-revenue').innerText = fmt.format(metrics.totalRevenue);
+            document.getElementById('kpi-expenses').innerText = fmt.format(metrics.totalExpenses);
+            
+            const netEl = document.getElementById('kpi-net');
+            const cardProfit = document.getElementById('card-profit');
+            const netDetail = document.getElementById('net-detail');
+            netEl.innerText = fmt.format(metrics.netProfit);
+            
+            if (metrics.netProfit >= 0) {
+                netEl.style.color = 'var(--accent-emerald)';
+                cardProfit.style.setProperty('--accent-color', 'var(--accent-emerald)');
+                netDetail.innerHTML = `<span class="indicator-dot dot-green"></span>Net Surplus`;
+            } else {
+                netEl.style.color = 'var(--accent-coral)';
+                cardProfit.style.setProperty('--accent-color', 'var(--accent-coral)');
+                netDetail.innerHTML = `<span class="indicator-dot dot-red"></span>Net Deficit`;
+            }
+
+            const runwayEl = document.getElementById('kpi-runway');
+            const cardRunway = document.getElementById('card-runway');
+            const runwayDetail = document.getElementById('runway-detail');
+            runwayEl.innerText = metrics.runwayText;
+            if (metrics.runwayColor === 'dot-red') {
+                runwayEl.style.color = 'var(--accent-coral)';
+                cardRunway.style.setProperty('--accent-color', 'var(--accent-coral)');
+                runwayDetail.innerHTML = `<span class="indicator-dot dot-red"></span>Critical runway constraint`;
+            } else {
+                runwayEl.style.color = 'var(--text-primary)';
+                cardRunway.style.setProperty('--accent-color', 'var(--accent-blue)');
+                runwayDetail.innerHTML = `<span class="indicator-dot dot-green"></span>Capitalized starting at $10k`;
+            }
+
+            // Update Tables
+            updateTable(metrics);
+
+            // Update Charts
+            updateCharts(metrics);
+        }
+
+        function updateTable(m) {
+            const tbody = document.getElementById('table-body');
+            
+            const items = [
+                // Revenue Items
+                { name: "Touring Performance Revenue", cat: "Earned", calc: `${m.inputs.showsTouring} shows at ${fmt.format(m.inputs.feeTouring)}/ea`, val: m.revTouring, style: "badge-purple" },
+                { name: "Local Performance Revenue", cat: "Earned", calc: `${m.inputs.showsLocal} shows at ${fmt.format(m.inputs.feeLocal)}/ea`, val: m.revLocal, style: "badge-indigo" },
+                { name: "Workshops & Outreach", cat: "Earned/Education", calc: `${m.inputs.workshops} sessions at ${fmt.format(m.inputs.feeWorkshop)}/ea`, val: m.revWorkshops, style: "badge-gold" },
+                { name: "Residencies", cat: "Earned/Institutional", calc: `${m.inputs.residencies} residencies at ${fmt.format(m.inputs.feeResidency)}/ea`, val: m.revResidencies, style: "badge-blue" },
+                { name: "Grants & Contributed Income", cat: "Contributed", calc: "Grants + Individual Donations", val: m.revGrants, style: "badge-emerald" },
+                { name: "Movement & Media Consulting", cat: "B2B / Speculative", calc: `${m.inputs.consultingHours * 12} hrs/year at ${fmt.format(m.inputs.consultingRate)}/hr`, val: m.revConsulting, style: "badge-indigo" },
+                
+                // Expense Items
+                { name: "Fixed Staff & Admin Fees", cat: "Fixed Personnel", calc: `${fmt.format(m.inputs.adminStaff)}/month flat retainers`, val: m.expAdminStaff, style: "badge-coral", isExpense: true },
+                { name: "Fixed Operating Overheads", cat: "Fixed Overhead", calc: `${fmt.format(m.inputs.fixedCosts)}/month (rent, insurance, software, web)`, val: m.expOperatingOverhead, style: "badge-coral", isExpense: true },
+                { name: "Cast & Crew Fees (Touring)", cat: "Var Personnel", calc: `${m.inputs.showsTouring} shows at ${fmt.format(m.inputs.touringCastCrew)}/show`, val: m.expTouringCastCrew, style: "badge-coral", isExpense: true },
+                { name: "Cast & Crew Fees (Local)", cat: "Var Personnel", calc: `${m.inputs.showsLocal} shows at ${fmt.format(m.inputs.localCastCrew)}/show`, val: m.expLocalCastCrew, style: "badge-coral", isExpense: true },
+                { name: "Production & Travel expenses", cat: "Var Production", calc: `${m.inputs.showsTouring + m.inputs.showsLocal} shows at ${fmt.format(m.inputs.varShow)}/show`, val: m.expProductionTravel, style: "badge-coral", isExpense: true }
+            ];
+
+            let html = "";
+            items.forEach(item => {
+                const percentage = m.totalRevenue > 0 ? ((item.val / m.totalRevenue) * 100).toFixed(1) : 0;
+                html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td><span class="badge ${item.style}">${item.cat}</span></td>
+                        <td style="color: var(--text-secondary); font-size: 0.8rem;">${item.calc}</td>
+                        <td style="text-align: right; font-weight: 500; color: ${item.isExpense ? 'var(--accent-coral)' : 'var(--text-primary)'}">
+                            ${item.isExpense ? '-' : ''}${fmt.format(item.val)}
+                        </td>
+                        <td style="text-align: right; color: var(--text-secondary);">${percentage}%</td>
+                    </tr>
+                `;
+            });
+
+            // Total rows
+            html += `
+                <tr class="total-row">
+                    <td>Total Projected Revenue</td>
+                    <td>—</td>
+                    <td>All streams combined</td>
+                    <td style="text-align: right; color: var(--text-primary);">${fmt.format(m.totalRevenue)}</td>
+                    <td style="text-align: right;">100%</td>
+                </tr>
+                <tr class="total-row">
+                    <td>Total Projected Expenses</td>
+                    <td>—</td>
+                    <td>Fixed + variable overheads & personnel</td>
+                    <td style="text-align: right; color: var(--accent-coral);">${fmt.format(m.totalExpenses)}</td>
+                    <td style="text-align: right;">—</td>
+                </tr>
+                <tr class="total-row" style="background: rgba(16, 185, 129, 0.05);">
+                    <td style="color: ${m.netProfit >= 0 ? 'var(--accent-emerald)' : 'var(--accent-coral)'}">Annual Net Position</td>
+                    <td>—</td>
+                    <td>Net surplus or deficit</td>
+                    <td style="text-align: right; color: ${m.netProfit >= 0 ? 'var(--accent-emerald)' : 'var(--accent-coral)'}">
+                        ${fmt.format(m.netProfit)}
+                    </td>
+                    <td style="text-align: right; color: ${m.netProfit >= 0 ? 'var(--accent-emerald)' : 'var(--accent-coral)'}">
+                        ${m.totalRevenue > 0 ? ((m.netProfit / m.totalRevenue) * 100).toFixed(1) : 0}%
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML = html;
+        }
+
+        function initCharts() {
+            // Cashflow Chart
+            const ctx1 = document.getElementById('cashflowChart').getContext('2d');
+            cashflowChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: MONTH_NAMES,
+                    datasets: [
+                        {
+                            label: 'Monthly Net Flow',
+                            type: 'bar',
+                            data: [],
+                            backgroundColor: 'rgba(99, 102, 241, 0.45)',
+                            borderColor: 'var(--accent-indigo)',
+                            borderWidth: 1.5,
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Cumulative Cash Balance',
+                            type: 'line',
+                            data: [],
+                            borderColor: 'var(--accent-purple)',
+                            borderWidth: 3,
+                            pointBackgroundColor: 'var(--accent-purple)',
+                            pointRadius: 3,
+                            fill: false,
+                            tension: 0.35,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#a1a1aa',
+                                font: { family: 'Plus Jakarta Sans', size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + fmt.format(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                            ticks: { color: '#a1a1aa', font: { family: 'Plus Jakarta Sans' } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                            ticks: { 
+                                color: '#a1a1aa', 
+                                font: { family: 'Plus Jakarta Sans' },
+                                callback: value => fmt.format(value)
+                            },
+                            position: 'left',
+                            title: { display: true, text: 'Net Cash Flow', color: '#a1a1aa' }
+                        },
+                        y1: {
+                            grid: { drawOnChartArea: false },
+                            ticks: { 
+                                color: '#a1a1aa', 
+                                font: { family: 'Plus Jakarta Sans' },
+                                callback: value => fmt.format(value)
+                            },
+                            position: 'right',
+                            title: { display: true, text: 'Cumulative Balance', color: '#a1a1aa' }
+                        }
+                    }
+                }
+            });
+
+            // Revenue Mix Chart
+            const ctx2 = document.getElementById('revenueMixChart').getContext('2d');
+            revenueMixChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Touring', 'Local', 'Workshops', 'Residencies', 'Consulting', 'Grants'],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            'var(--accent-purple)',
+                            'var(--accent-indigo)',
+                            'var(--accent-gold)',
+                            'var(--accent-blue)',
+                            'rgba(99, 102, 241, 0.8)',
+                            'var(--accent-emerald)'
+                        ],
+                        borderWidth: 1.5,
+                        borderColor: 'var(--bg-surface)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#a1a1aa',
+                                font: { family: 'Plus Jakarta Sans', size: 10 },
+                                padding: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ': ' + fmt.format(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        function updateCharts(m) {
+            if (!cashflowChart || !revenueMixChart) return;
+
+            // Update Cash Flow Chart
+            cashflowChart.data.datasets[0].data = m.monthlyNet;
+            cashflowChart.data.datasets[1].data = m.cumulativeBalance;
+            cashflowChart.update();
+
+            // Update Revenue Mix Chart
+            const mixData = [m.revTouring, m.revLocal, m.revWorkshops, m.revResidencies, m.revConsulting, m.revGrants];
+            revenueMixChart.data.datasets[0].data = mixData;
+            revenueMixChart.update();
+        }
+    </script>
+</body>
+</html>
