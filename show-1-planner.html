@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea Creations — Show 1: Harvester Arts Production Planner</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #121218;
+            --bg-surface-hover: #1c1c24;
+            --bg-card: #181820;
+            --border-color: #272730;
+            --border-light: #383844;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-purple: #8b5cf6;
+            --accent-purple-glow: rgba(139, 92, 246, 0.2);
+            --accent-indigo: #6366f1;
+            --accent-gold: #f59e0b;
+            --accent-blue: #0ea5e9;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Top Header */
+        .header-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(99, 102, 241, 0.04));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: white;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .brand-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .event-badge {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .event-badge .dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-emerald);
+        }
+
+        .event-badge-text div:first-child {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .event-badge-text div:last-child {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Package Selection Tabs */
+        .packages-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .package-btn {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .package-btn:hover {
+            border-color: var(--border-light);
+            background: var(--bg-surface-hover);
+        }
+
+        .package-btn.active {
+            border-color: var(--accent-purple);
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.12), rgba(18, 18, 24, 0.95));
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
+        }
+
+        .package-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent-purple);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .package-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .package-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .package-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        .package-bottom .cost {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .package-bottom .status {
+            font-weight: 600;
+        }
+
+        .status.positive { color: var(--accent-emerald); }
+        .status.neutral { color: var(--accent-gold); }
+        .status.investment { color: var(--accent-blue); }
+
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1080px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        /* KPI Cards */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .kpi-val {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .kpi-sub {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .val-profit { color: var(--accent-emerald); }
+        .val-loss { color: var(--accent-rose); }
+        .val-gold { color: var(--accent-gold); }
+
+        /* Detailed Breakdown Table */
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .card-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        table.breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        table.breakdown-table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table.breakdown-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        table.breakdown-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-primary);
+        }
+
+        table.breakdown-table td.amount {
+            text-align: right;
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        tr.category-row td {
+            background: rgba(139, 92, 246, 0.05);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr.total-row td {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            border-top: 2px solid var(--border-light);
+        }
+
+        /* Chart & Strategic Panel */
+        .chart-container {
+            position: relative;
+            height: 260px;
+            margin: 10px 0;
+        }
+
+        .insight-box {
+            background: rgba(245, 158, 11, 0.06);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #fde68a;
+        }
+
+        .insight-box strong {
+            color: #fbbf24;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        .strategic-callout {
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #c7d2fe;
+        }
+
+        .strategic-callout strong {
+            color: #a5b4fc;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Controls Slider */
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .slider-header span:first-child { color: var(--text-secondary); }
+        .slider-header span:last-child { font-weight: 700; color: var(--accent-gold); }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-purple);
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer a {
+            color: var(--accent-purple);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header-card">
+        <div class="brand-block">
+            <div class="brand-logo">A</div>
+            <div class="brand-text">
+                <h1>Alithea Creations — Production P&L Simulator</h1>
+                <p>Show 1: Harvester Arts Showcase · Saturday, January 30, 2027 · Max House: 120 Seats</p>
+            </div>
+        </div>
+        <div class="event-badge">
+            <div class="dot"></div>
+            <div class="event-badge-text">
+                <div>Model Engine</div>
+                <div>Live Dynamic Sync (v2.1)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Navigation -->
+    <div class="packages-nav">
+        <div class="package-btn" onclick="selectPackage('quote')">
+            <span class="package-tag">Benchmark</span>
+            <div class="package-title">Harvester Quote Baseline</div>
+            <div class="package-desc">Emily Cass venue card quote alone. $0 artist pay, $0 staff, $0 travel. Pure facility benchmark.</div>
+            <div class="package-bottom">
+                <span class="cost">$915 Cost</span>
+                <span class="status positive">63 Tix Break-Even</span>
+            </div>
+        </div>
+
+        <div class="package-btn" onclick="selectPackage('packageA')">
+            <span class="package-tag">Package 1</span>
+            <div class="package-title">Lean Showcase (Opt A)</div>
+            <div class="package-desc">Honors company with $350 cast base; $0 staff; in-house lighting op ($50); local promotion. Minimal risk.</div>
+            <div class="package-bottom">
+                <span class="cost">$1,480 Cost</span>
+                <span class="status neutral">128 Tix Break-Even</span>
+            </div>
+        </div>
+
+        <div class="package-btn active" onclick="selectPackage('packageB')">
+            <span class="package-tag">Package 2 (Target)</span>
+            <div class="package-title">Sustainable Standard (Opt B)</div>
+            <div class="package-desc">Fair contractor rates, director/admin stipends, full 8-person tech team, Kent AV gear, post-show cast reception & <strong>Zoe flight ($500)</strong>.</div>
+            <div class="package-bottom">
+                <span class="cost">$3,205 Cost</span>
+                <span class="status positive">Target Model</span>
+            </div>
+        </div>
+
+        <div class="package-btn" onclick="selectPackage('packageC')">
+            <span class="package-tag">Package 3</span>
+            <div class="package-title">Flagship Premiere (Opt C)</div>
+            <div class="package-desc">Broadcast 4K EPK video capture, full Kent AV lighting/sound, donor gala reception, studio backup. Asset creation investment.</div>
+            <div class="package-bottom">
+                <span class="cost">$5,475 Cost</span>
+                <span class="status investment">Capitalized Asset</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dashboard-grid">
+        <!-- Left: Summary & Tables -->
+        <div class="main-column">
+            <!-- KPIs -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">Projected Net P&L</div>
+                    <div class="kpi-val" id="kpiNet">-$1,258</div>
+                    <div class="kpi-sub" id="kpiMargin">-64.6% margin</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Gross / Net Revenue</div>
+                    <div class="kpi-val" id="kpiRev">$1,947</div>
+                    <div class="kpi-sub" id="kpiRevBreakdown">Tickets $1,397 + Pitch $250 + Sponsor $300</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Show Expenses</div>
+                    <div class="kpi-val val-gold" id="kpiExp">$3,205</div>
+                    <div class="kpi-sub" id="kpiCostPerHead">$33.39 cost / attendee</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Break-Even Tickets</div>
+                    <div class="kpi-val" id="kpiBreakEven">221</div>
+                    <div class="kpi-sub" id="kpiCapacityCap">184% of 120-seat room</div>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown Table -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Production Cost & Revenue Breakdown</div>
+                        <div class="card-sub" id="tableSubTitle">Package 2: Sustainable Standard vs. Strong Attendance ($15 @ 80%)</div>
+                    </div>
+                </div>
+
+                <table class="breakdown-table">
+                    <thead>
+                        <tr>
+                            <th>Category / Line Item</th>
+                            <th>Cost Basis / Scope</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="breakdownTableBody">
+                        <!-- Dynamically populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right: Charts & Strategic Insights -->
+        <div class="side-column" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Interactive Simulator Levers -->
+            <div class="card">
+                <div class="card-title">Interactive Revenue Levers</div>
+                <div class="card-sub">Test sensitivity on attendance and pricing</div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>Ticket Price ($)</span>
+                        <span id="lblPrice">$15.00</span>
+                    </div>
+                    <input type="range" id="rngPrice" min="8" max="25" step="1" value="15" oninput="updateCalculations()">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>Attendance Sell-Through (%)</span>
+                        <span id="lblSellThrough">80% (96 seats)</span>
+                    </div>
+                    <input type="range" id="rngSellThrough" min="30" max="100" step="5" value="80" oninput="updateCalculations()">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>Concession / Mid-Show Pitch ($)</span>
+                        <span id="lblPitch">$250</span>
+                    </div>
+                    <input type="range" id="rngPitch" min="0" max="500" step="25" value="250" oninput="updateCalculations()">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>Community Sponsor / Patron ($)</span>
+                        <span id="lblSponsor">$300</span>
+                    </div>
+                    <input type="range" id="rngSponsor" min="0" max="1000" step="50" value="300" oninput="updateCalculations()">
+                </div>
+            </div>
+
+            <!-- Expense Distribution Chart -->
+            <div class="card">
+                <div class="card-title">Expense Allocation</div>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Strategic Insights -->
+            <div class="insight-box">
+                <strong>💡 The 120-Seat Capacity Constraint</strong>
+                In Package 2 ($3,205 cost), ticket sales alone at $15 would require <strong>221 tickets</strong> to break even. In a 120-seat room, this is physically impossible. 
+                The <strong>$300 sponsor</strong> and <strong>$250 mid-show pitch</strong> are mandatory operational lifelines.
+            </div>
+
+            <div class="strategic-callout">
+                <strong>🎯 Recommendation: Tiered Seating & Multi-Show</strong>
+                Adding a $35 VIP Patron Ticket (Front 2 rows + Reception toast) generates an extra <strong>+$400 margin</strong> to fully fund Zoe's flight. Alternatively, adding a 2pm matinee show doubles capacity to 240 seats for only +$250 in venue/cast costs!
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Alithea Creations LLC · Model synced with Google Sheets analytical workbook (Tab: <a href="https://docs.google.com/spreadsheets/d/1vEU4PbgEpfFzmWO6DAVS8W8x2wIAKKCeN1s4QvNx72U/edit?gid=551779090#gid=551779090" target="_blank">Show Planner</a>). Generated for Zoe Johnson & Nicholas Johnson.
+    </div>
+</div>
+
+<script>
+    // State
+    const packages = {
+        quote: {
+            name: "Harvester Quote Baseline",
+            tag: "Benchmark",
+            sub: "Emily Cass rental card quote only ($0 production labor)",
+            venue: 915,
+            studio: 0,
+            kentAV: 0,
+            artist: 0,
+            staff: 0,
+            tech: 0,
+            ops: 0,
+            events: 0,
+            travel: 0,
+            defaultPrice: 15,
+            defaultSell: 1.0,
+            defaultPitch: 200,
+            defaultSponsor: 0
+        },
+        packageA: {
+            name: "Package 1: Lean Showcase",
+            tag: "Package 1",
+            sub: "Guaranteed $350 cast base; $0 staff; in-house lighting op ($50); local promo",
+            venue: 915,
+            studio: 0,
+            kentAV: 0,
+            artist: 350,
+            staff: 0,
+            tech: 50,
+            ops: 165,
+            events: 0,
+            travel: 0,
+            defaultPrice: 12,
+            defaultSell: 0.65,
+            defaultPitch: 100,
+            defaultSponsor: 0
+        },
+        packageB: {
+            name: "Package 2: Sustainable Standard",
+            tag: "Package 2 (Target)",
+            sub: "Fair contractor rates, staff stipends, 8-person tech crew, Kent AV, reception & Zoe flight ($500)",
+            venue: 915,
+            studio: 0,
+            kentAV: 125,
+            artist: 200,
+            staff: 250,
+            tech: 550,
+            ops: 565,
+            events: 100,
+            travel: 500,
+            defaultPrice: 15,
+            defaultSell: 0.80,
+            defaultPitch: 250,
+            defaultSponsor: 300
+        },
+        packageC: {
+            name: "Package 3: Flagship Premiere",
+            tag: "Package 3",
+            sub: "Broadcast 4K EPK video, full Kent AV gear, donor gala reception, studio backup. Capitalized asset.",
+            venue: 915,
+            studio: 200,
+            kentAV: 350,
+            artist: 500,
+            staff: 500,
+            tech: 1100,
+            ops: 960,
+            events: 250,
+            travel: 700,
+            defaultPrice: 15,
+            defaultSell: 0.80,
+            defaultPitch: 250,
+            defaultSponsor: 300
+        }
+    };
+
+    let currentPkgKey = 'packageB';
+    let chartInstance = null;
+
+    function selectPackage(key) {
+        currentPkgKey = key;
+        
+        // Update nav buttons
+        document.querySelectorAll('.package-btn').forEach(btn => btn.classList.remove('active'));
+        const indexMap = { quote: 0, packageA: 1, packageB: 2, packageC: 3 };
+        document.querySelectorAll('.package-btn')[indexMap[key]].classList.add('active');
+
+        // Set slider defaults
+        const pkg = packages[key];
+        document.getElementById('rngPrice').value = pkg.defaultPrice;
+        document.getElementById('rngSellThrough').value = Math.round(pkg.defaultSell * 100);
+        document.getElementById('rngPitch').value = pkg.defaultPitch;
+        document.getElementById('rngSponsor').value = pkg.defaultSponsor;
+
+        updateCalculations();
+    }
+
+    function updateCalculations() {
+        const pkg = packages[currentPkgKey];
+        const price = parseFloat(document.getElementById('rngPrice').value);
+        const sellThroughPct = parseFloat(document.getElementById('rngSellThrough').value) / 100;
+        const pitch = parseFloat(document.getElementById('rngPitch').value);
+        const sponsor = parseFloat(document.getElementById('rngSponsor').value);
+
+        const capacity = 120;
+        const ticketsSold = Math.round(capacity * sellThroughPct);
+        const grossTicketRev = ticketsSold * price;
+        const netTicketRev = grossTicketRev * 0.97; // 3% fee
+        const totalRevenue = netTicketRev + pitch + sponsor;
+
+        const totalExpense = pkg.venue + pkg.studio + pkg.kentAV + pkg.artist + pkg.staff + pkg.tech + pkg.ops + pkg.events + pkg.travel;
+        const netProfit = totalRevenue - totalExpense;
+        const margin = totalRevenue > 0 ? (netProfit / totalRevenue) : 0;
+        const costPerHead = ticketsSold > 0 ? (totalExpense / ticketsSold) : 0;
+        const breakEvenTickets = price > 0 ? Math.ceil(totalExpense / (price * 0.97)) : 'N/A';
+
+        // Update Labels
+        document.getElementById('lblPrice').innerText = `$${price.toFixed(2)}`;
+        document.getElementById('lblSellThrough').innerText = `${Math.round(sellThroughPct * 100)}% (${ticketsSold} seats)`;
+        document.getElementById('lblPitch').innerText = `$${pitch}`;
+        document.getElementById('lblSponsor').innerText = `$${sponsor}`;
+
+        // Update KPIs
+        const kpiNet = document.getElementById('kpiNet');
+        kpiNet.innerText = (netProfit >= 0 ? '+' : '') + `$${Math.round(netProfit).toLocaleString()}`;
+        kpiNet.className = 'kpi-val ' + (netProfit >= 0 ? 'val-profit' : 'val-loss');
+
+        const kpiMargin = document.getElementById('kpiMargin');
+        kpiMargin.innerText = `${(margin * 100).toFixed(1)}% profit margin`;
+
+        document.getElementById('kpiRev').innerText = `$${Math.round(totalRevenue).toLocaleString()}`;
+        document.getElementById('kpiRevBreakdown').innerText = `Tickets $${Math.round(netTicketRev)} + Pitch $${pitch} + Sponsor $${sponsor}`;
+
+        document.getElementById('kpiExp').innerText = `$${Math.round(totalExpense).toLocaleString()}`;
+        document.getElementById('kpiCostPerHead').innerText = `$${costPerHead.toFixed(2)} cost / attendee`;
+
+        document.getElementById('kpiBreakEven').innerText = breakEvenTickets;
+        const capacityRatio = Math.round((breakEvenTickets / capacity) * 100);
+        document.getElementById('kpiCapacityCap').innerText = `${capacityRatio}% of 120-seat room`;
+
+        document.getElementById('tableSubTitle').innerText = `${pkg.name} vs. ${Math.round(sellThroughPct * 100)}% attendance at $${price}/ticket`;
+
+        // Update Table
+        renderBreakdownTable(pkg, netTicketRev, pitch, sponsor, totalRevenue, totalExpense, netProfit);
+
+        // Update Chart
+        renderChart(pkg);
+    }
+
+    function renderBreakdownTable(pkg, netTicketRev, pitch, sponsor, totalRevenue, totalExpense, netProfit) {
+        const tbody = document.getElementById('breakdownTableBody');
+        tbody.innerHTML = `
+            <!-- Revenue Section -->
+            <tr class="category-row">
+                <td colspan="2">1. REVENUE STREAMS</td>
+                <td class="amount">$${Math.round(totalRevenue).toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Net Ticket Revenue</td>
+                <td>${document.getElementById('lblSellThrough').innerText} at $${document.getElementById('rngPrice').value}/tix (less 3% fee)</td>
+                <td class="amount">$${Math.round(netTicketRev).toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Mid-Show Concession / Pass-the-Hat Pitch</td>
+                <td>Harvester pitch allowance (QR code / cash)</td>
+                <td class="amount">$${pitch.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Community Underwriting / Program Sponsors</td>
+                <td>Local business or patron sponsor commitment</td>
+                <td class="amount">$${sponsor.toLocaleString()}</td>
+            </tr>
+
+            <!-- Expense Section -->
+            <tr class="category-row">
+                <td colspan="2">2. PRODUCTION EXPENSES</td>
+                <td class="amount">$${Math.round(totalExpense).toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Harvester Arts Performance Venue & Staff</td>
+                <td>8 hrs rental, door staff, light trees, marley floor, pipe/drape</td>
+                <td class="amount">$${pkg.venue.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Rehearsal Studio Space (WSU vs. Commercial)</td>
+                <td>${pkg.studio === 0 ? 'WSU dance studio (Donated / Free)' : 'Commercial dance studio rental buffer'}</td>
+                <td class="amount">$${pkg.studio.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Supplemental AV Equipment (Kent AV)</td>
+                <td>${pkg.kentAV === 0 ? 'Harvester house gear only ($0)' : (pkg.kentAV <= 150 ? 'Supplemental LED pars & audio snake' : 'Full PA, wireless mics, DMX controller & trees')}</td>
+                <td class="amount">$${pkg.kentAV.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Artist & Performer Labor (Cast Honorarium / Acts)</td>
+                <td>Base cast stipend + rehearsal hours + act performance rates</td>
+                <td class="amount">$${pkg.artist.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Artistic & Administration Staff</td>
+                <td>Artistic Director (Nick) + Operations Coordinator (Zoe/Sabrina)</td>
+                <td class="amount">$${pkg.staff.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Production & Technical Labor</td>
+                <td>Technical director, lighting & sound designers/ops, deck crew, stage manager</td>
+                <td class="amount">$${pkg.tech.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Production Operations, Marketing & Wardrobe</td>
+                <td>Targeted marketing, posters, mime makeup, props, green room, insurance</td>
+                <td class="amount">$${pkg.ops.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Supplemental Events (Cast Party / Reception)</td>
+                <td>Post-show patron wine toast & performer Q&A</td>
+                <td class="amount">$${pkg.events.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Travel & Regional Transit (Zoe to ICT)</td>
+                <td>${pkg.travel === 0 ? 'Remote producing / zero travel' : 'Roundtrip airfare to Wichita (ICT) + airport transit'}</td>
+                <td class="amount">$${pkg.travel.toLocaleString()}</td>
+            </tr>
+
+            <!-- Net Total -->
+            <tr class="total-row">
+                <td colspan="2">PROJECTED NET PROFIT / (LOSS)</td>
+                <td class="amount" style="color: ${netProfit >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)'};">
+                    ${netProfit >= 0 ? '+' : ''}$${Math.round(netProfit).toLocaleString()}
+                </td>
+            </tr>
+        `;
+    }
+
+    function renderChart(pkg) {
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        const dataValues = [
+            pkg.venue + pkg.studio + pkg.kentAV,
+            pkg.artist,
+            pkg.staff,
+            pkg.tech,
+            pkg.ops + pkg.events,
+            pkg.travel
+        ];
+
+        if (chartInstance) {
+            chartInstance.data.datasets[0].data = dataValues;
+            chartInstance.update();
+            return;
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Venue & Facilities', 'Artist Labor', 'Artistic/Admin Staff', 'Tech Crew', 'Operations & Events', 'Travel (Zoe)'],
+                datasets: [{
+                    data: dataValues,
+                    backgroundColor: [
+                        '#8b5cf6', // purple
+                        '#6366f1', // indigo
+                        '#0ea5e9', // blue
+                        '#10b981', // emerald
+                        '#f59e0b', // gold
+                        '#f43f5e'  // rose
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#a1a1aa',
+                            font: { family: 'Plus Jakarta Sans', size: 10 },
+                            boxWidth: 12,
+                            padding: 12
+                        }
+                    }
+                },
+                cutout: '68%'
+            }
+        });
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+        selectPackage('packageB');
+    });
+</script>
+
+</body>
+</html>

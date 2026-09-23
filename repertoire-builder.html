@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea Creations — Repertoire & Program Builder</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #121218;
+            --bg-surface-hover: #1c1c24;
+            --bg-card: #181820;
+            --border-color: #272730;
+            --border-light: #383844;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-purple: #8b5cf6;
+            --accent-purple-glow: rgba(139, 92, 246, 0.25);
+            --accent-indigo: #6366f1;
+            --accent-gold: #f59e0b;
+            --accent-blue: #0ea5e9;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.04));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
+        }
+
+        .brand-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--bg-surface-hover);
+            border-color: var(--border-light);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border: none;
+            color: white;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Live Show HUD */
+        .hud-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+        }
+
+        .hud-metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .hud-val {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .hud-val span.sub {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-weight: 500;
+        }
+
+        .hud-highlight { color: var(--accent-emerald); }
+        .hud-gold { color: var(--accent-gold); }
+        .hud-purple { color: var(--accent-purple); }
+
+        /* Main Workspace Grid */
+        .workspace {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1080px) {
+            .workspace { grid-template-columns: 1fr; }
+        }
+
+        /* Panel Styling */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .panel-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Library Cards */
+        .library-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .piece-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .piece-card:hover {
+            border-color: var(--border-light);
+            background: var(--bg-surface-hover);
+            transform: translateY(-1px);
+        }
+
+        .piece-card.included {
+            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .piece-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .piece-name {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .duration-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .piece-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-add {
+            align-self: flex-start;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add:hover {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        .btn-add.in-show {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+            cursor: default;
+        }
+
+        /* Program Set List (Right Panel) */
+        .program-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .program-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: grid;
+            grid-template-columns: 40px 1.4fr 1.8fr 70px;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .program-item:hover {
+            border-color: var(--border-light);
+        }
+
+        .order-badge {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+        }
+
+        .program-details h3 {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .program-details p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Inputs Grid inside Item */
+        .item-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-group label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .input-group input, .input-group select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-end;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-icon.delete:hover {
+            color: var(--accent-rose);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .code-box {
+            background: #09090b;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #a5b4fc;
+            max-height: 240px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="brand-block">
+            <div class="brand-logo">🎭</div>
+            <div class="brand-text">
+                <h1>Show 1: Program & Casting Builder</h1>
+                <p>Alithea Creations × Harvester Arts · Sequence pieces, assign cast & estimate rehearsal labor in real time</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="https://docs.google.com/spreadsheets/d/1vEU4PbgEpfFzmWO6DAVS8W8x2wIAKKCeN1s4QvNx72U/edit?gid=2145049214#gid=2145049214" target="_blank" class="btn">
+                📊 Open Google Sheets
+            </a>
+            <button class="btn btn-primary" onclick="openSyncModal()">
+                ⚡ Sync Program Payload
+            </button>
+        </div>
+    </div>
+
+    <!-- Live HUD Bar -->
+    <div class="hud-bar">
+        <div class="hud-metric">
+            <span class="hud-label">Show Runtime</span>
+            <div class="hud-val hud-purple" id="hudRuntime">0 min <span class="sub">target: 50–70m</span></div>
+        </div>
+        <div class="hud-metric">
+            <span class="hud-label">Program Pieces</span>
+            <div class="hud-val" id="hudPieces">0 acts <span class="sub">scheduled</span></div>
+        </div>
+        <div class="hud-metric">
+            <span class="hud-label">Performer-Rehearsals (PR)</span>
+            <div class="hud-val hud-gold" id="hudPR">0 <span class="sub">Σ cast × rehearsals</span></div>
+        </div>
+        <div class="hud-metric">
+            <span class="hud-label">Est. Rehearsal Cost (@ $25/PR)</span>
+            <div class="hud-val" id="hudRehearsalCost">$0 <span class="sub">in Option B</span></div>
+        </div>
+        <div class="hud-metric">
+            <span class="hud-label">Est. Act Appearance Fee (@ $30/act)</span>
+            <div class="hud-val hud-highlight" id="hudActCost">$0 <span class="sub">in Option B</span></div>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+        <!-- Left: Piece Library -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Alithea Repertoire Library</span>
+                <span class="panel-count" id="libCount">12 Pieces</span>
+            </div>
+            <div class="library-list" id="libraryList">
+                <!-- Dynamically rendered via JS -->
+            </div>
+        </div>
+
+        <!-- Right: Show 1 Program Sequence -->
+        <div class="panel" style="flex: 1;">
+            <div class="panel-header">
+                <div>
+                    <span class="panel-title">Show 1 Running Order</span>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Saturday, January 30, 2027 · Harvester Arts (Wichita, KS)</p>
+                </div>
+                <button class="btn" style="padding: 6px 12px; font-size: 0.75rem;" onclick="resetToSampleProgram()">
+                    ↺ Load Sample Set
+                </button>
+            </div>
+
+            <div class="program-list" id="programList">
+                <!-- Dynamically rendered via JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sync Modal -->
+<div class="modal-overlay" id="syncModal">
+    <div class="modal-card">
+        <div class="modal-title">Sync Program to Google Sheets</div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+            The payload below matches the exact column structure of the <strong>Repertoire</strong> tab in your financial workbook. 
+            You can copy this JSON to push via API or paste into the workbook.
+        </p>
+        <div class="code-box" id="modalPayload"></div>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeSyncModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="copyPayload()">📋 Copy Payload to Clipboard</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 12 Canonical Pieces from Alithea Repertoire Tab
+    const repertoireLibrary = [
+        { id: "p1", name: "Electric Nights", creator: "Nicholas Johnson", duration: 10, defaultCast: 4, defaultRehearsals: 4, notes: "High energy ensemble piece" },
+        { id: "p2", name: "Lifesong", creator: "Nicholas Johnson", duration: 7, defaultCast: 2, defaultRehearsals: 3, notes: "Duet, lyrical physical theatre" },
+        { id: "p3", name: "Strangers in the Night", creator: "Lorie Heald", duration: 10, defaultCast: 3, defaultRehearsals: 4, notes: "Atmospheric narrative mime" },
+        { id: "p4", name: "Marionette", creator: "Nicholas Johnson", duration: 5, defaultCast: 1, defaultRehearsals: 2, notes: "Solo piece, classic precision" },
+        { id: "p5", name: "InsideOut", creator: "Nicholas Johnson", duration: 5, defaultCast: 2, defaultRehearsals: 2, notes: "Comedic mime duet" },
+        { id: "p6", name: "Body of Music", creator: "Nicholas Johnson", duration: 5, defaultCast: 1, defaultRehearsals: 2, notes: "Solo physical musicality" },
+        { id: "p7", name: "Freudian Slip", creator: "Nicholas Johnson", duration: 6, defaultCast: 2, defaultRehearsals: 3, notes: "Surrealistic comedy" },
+        { id: "p8", name: "Asylum", creator: "Nicholas Johnson", duration: 15, defaultCast: 5, defaultRehearsals: 6, notes: "Dramatic ensemble anchor piece" },
+        { id: "p9", name: "Cain and Abel", creator: "Jose Rivera", duration: 5, defaultCast: 2, defaultRehearsals: 2, notes: "Intense physical conflict" },
+        { id: "p10", name: "Improvisation", creator: "— (Interactive)", duration: 12, defaultCast: 3, defaultRehearsals: 1, notes: "Audience interactive segment" },
+        { id: "p11", name: "Bun Raku Love", creator: "Nicholas Johnson", duration: 6, defaultCast: 2, defaultRehearsals: 2, notes: "Puppetry and mime hybrid" },
+        { id: "p12", name: "Angels Rising", creator: "Nicholas Johnson", duration: 17, defaultCast: 6, defaultRehearsals: 6, notes: "Climactic full company finale" }
+    ];
+
+    // Current Program State
+    let program = [];
+
+    // Initialize with a strong 6-piece sample set
+    function resetToSampleProgram() {
+        program = [
+            { id: "p1", name: "Electric Nights", duration: 10, cast: 4, rehearsals: 4, performers: "Company A" },
+            { id: "p4", name: "Marionette", duration: 5, cast: 1, rehearsals: 2, performers: "Nicholas" },
+            { id: "p5", name: "InsideOut", duration: 5, cast: 2, rehearsals: 2, performers: "Nicholas, Zoe" },
+            { id: "p7", name: "Freudian Slip", duration: 6, cast: 2, rehearsals: 3, performers: "Cast B" },
+            { id: "p10", name: "Improvisation", duration: 12, cast: 3, rehearsals: 1, performers: "Full ensemble" },
+            { id: "p12", name: "Angels Rising", duration: 17, cast: 6, rehearsals: 6, performers: "Full company" }
+        ];
+        render();
+    }
+
+    function addPieceToProgram(pieceId) {
+        if (program.find(p => p.id === pieceId)) return;
+        const lib = repertoireLibrary.find(p => p.id === pieceId);
+        program.push({
+            id: lib.id,
+            name: lib.name,
+            duration: lib.duration,
+            cast: lib.defaultCast,
+            rehearsals: lib.defaultRehearsals,
+            performers: ""
+        });
+        render();
+    }
+
+    function removePieceFromProgram(index) {
+        program.splice(index, 1);
+        render();
+    }
+
+    function movePiece(index, direction) {
+        if (direction === -1 && index > 0) {
+            const temp = program[index];
+            program[index] = program[index - 1];
+            program[index - 1] = temp;
+        } else if (direction === 1 && index < program.length - 1) {
+            const temp = program[index];
+            program[index] = program[index + 1];
+            program[index + 1] = temp;
+        }
+        render();
+    }
+
+    function updatePiece(index, field, value) {
+        if (field === 'cast' || field === 'rehearsals' || field === 'duration') {
+            program[index][field] = Math.max(0, parseInt(value) || 0);
+        } else {
+            program[index][field] = value;
+        }
+        updateHUD();
+    }
+
+    function updateHUD() {
+        let totalRuntime = 0;
+        let totalPR = 0;
+
+        program.forEach(p => {
+            totalRuntime += p.duration;
+            totalPR += (p.cast * p.rehearsals);
+        });
+
+        const ratePerPR = 25; // Standard Option B rate
+        const ratePerAct = 30; // Standard Option B rate
+        const rehearsalCost = totalPR * ratePerPR;
+        const actCost = program.length * ratePerAct;
+
+        document.getElementById('hudRuntime').innerHTML = `${totalRuntime} min <span class="sub">target: 50–70m</span>`;
+        document.getElementById('hudPieces').innerHTML = `${program.length} acts <span class="sub">scheduled</span>`;
+        document.getElementById('hudPR').innerHTML = `${totalPR} <span class="sub">Σ cast × rehearsals</span>`;
+        document.getElementById('hudRehearsalCost').innerHTML = `$${rehearsalCost.toLocaleString()} <span class="sub">in Option B</span>`;
+        document.getElementById('hudActCost').innerHTML = `$${actCost.toLocaleString()} <span class="sub">in Option B</span>`;
+    }
+
+    function render() {
+        // 1. Render Library
+        const libContainer = document.getElementById('libraryList');
+        libContainer.innerHTML = '';
+        repertoireLibrary.forEach(piece => {
+            const isIncluded = program.some(p => p.id === piece.id);
+            const card = document.createElement('div');
+            card.className = `piece-card ${isIncluded ? 'included' : ''}`;
+            card.innerHTML = `
+                <div class="piece-top">
+                    <div>
+                        <div class="piece-name">${piece.name}</div>
+                        <div class="piece-meta">
+                            <span>${piece.creator}</span>
+                            <span>·</span>
+                            <span>Default: ${piece.defaultCast} cast / ${piece.defaultRehearsals} reh</span>
+                        </div>
+                    </div>
+                    <span class="duration-badge">${piece.duration} min</span>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${piece.notes}</div>
+                <button class="btn-add ${isIncluded ? 'in-show' : ''}" onclick="addPieceToProgram('${piece.id}')">
+                    ${isIncluded ? '✓ In Show 1' : '+ Add to Show 1'}
+                </button>
+            `;
+            libContainer.appendChild(card);
+        });
+
+        // 2. Render Program List
+        const progContainer = document.getElementById('programList');
+        progContainer.innerHTML = '';
+
+        if (program.length === 0) {
+            progContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.9rem;">
+                    No pieces scheduled yet. Click <strong>+ Add to Show 1</strong> on pieces from the library to build the set list.
+                </div>
+            `;
+        }
+
+        program.forEach((piece, idx) => {
+            const row = document.createElement('div');
+            row.className = 'program-item';
+            row.innerHTML = `
+                <div class="order-badge">${idx + 1}</div>
+                <div class="program-details">
+                    <h3>${piece.name}</h3>
+                    <p>${piece.duration} min · Contribution: ${piece.cast * piece.rehearsals} PR</p>
+                </div>
+                <div class="item-inputs">
+                    <div class="input-group">
+                        <label>Cast Size</label>
+                        <input type="number" min="1" max="15" value="${piece.cast}" onchange="updatePiece(${idx}, 'cast', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Rehearsals</label>
+                        <input type="number" min="0" max="20" value="${piece.rehearsals}" onchange="updatePiece(${idx}, 'rehearsals', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Performer Names</label>
+                        <input type="text" placeholder="e.g. Nick, Zoe..." value="${piece.performers || ''}" onchange="updatePiece(${idx}, 'performers', this.value)">
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <div style="display: flex; gap: 2px;">
+                        <button class="btn-icon" title="Move Up" onclick="movePiece(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+                        <button class="btn-icon" title="Move Down" onclick="movePiece(${idx}, 1)" ${idx === program.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+                    </div>
+                    <button class="btn-icon delete" title="Remove Piece" onclick="removePieceFromProgram(${idx})">✕</button>
+                </div>
+            `;
+            progContainer.appendChild(row);
+        });
+
+        updateHUD();
+    }
+
+    // Modal
+    function openSyncModal() {
+        const payload = {
+            eventName: "Show 1: Harvester Arts Showcase",
+            date: "2027-01-30",
+            totalRuntimeMinutes: program.reduce((sum, p) => sum + p.duration, 0),
+            totalPieces: program.length,
+            totalPerformerRehearsals: program.reduce((sum, p) => sum + (p.cast * p.rehearsals), 0),
+            programOrder: program.map((p, idx) => ({
+                order: idx + 1,
+                pieceName: p.name,
+                castSize: p.cast,
+                rehearsalsRequired: p.rehearsals,
+                performerNames: p.performers,
+                durationMinutes: p.duration
+            }))
+        };
+        document.getElementById('modalPayload').innerText = JSON.stringify(payload, null, 2);
+        document.getElementById('syncModal').style.display = 'flex';
+    }
+
+    function closeSyncModal() {
+        document.getElementById('syncModal').style.display = 'none';
+    }
+
+    function copyPayload() {
+        const text = document.getElementById('modalPayload').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Payload copied to clipboard! You can paste this directly into Google Sheets or send via API.");
+            closeSyncModal();
+        });
+    }
+
+    // Run on load
+    window.addEventListener('DOMContentLoaded', () => {
+        resetToSampleProgram();
+    });
+</script>
+
+</body>
+</html>
