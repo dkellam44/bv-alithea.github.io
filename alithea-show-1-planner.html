@@ -462,19 +462,19 @@
         <div class="package-btn" onclick="selectPackage('packageA')">
             <span class="package-tag">Package 1</span>
             <div class="package-title">Lean Showcase (Opt A)</div>
-            <div class="package-desc">Honors company with $350 cast base; $0 staff; in-house lighting op ($50); local promotion. Minimal risk.</div>
+            <div class="package-desc">Honors company with $250/dancer floor ($1,000 for 4); $0 staff; in-house lighting op ($50); local promotion. Minimal floor.</div>
             <div class="package-bottom">
-                <span class="cost">$1,480 Cost</span>
-                <span class="status neutral">128 Tix Break-Even</span>
+                <span class="cost">$2,130 Cost</span>
+                <span class="status neutral">183 Tix Break-Even</span>
             </div>
         </div>
 
         <div class="package-btn active" onclick="selectPackage('packageB')">
             <span class="package-tag">Package 2 (Target)</span>
             <div class="package-title">Sustainable Standard (Opt B)</div>
-            <div class="package-desc">Fair contractor rates, director/admin stipends, full 8-person tech team, Kent AV gear, post-show cast reception & <strong>Zoe flight ($500)</strong>.</div>
+            <div class="package-desc">Grounded fair-wage benchmark: <strong>$500/performer ($2,000 for 4)</strong>, <strong>$500 minimum Tech Director</strong>, staff stipends, Kent AV gear, cast reception & <strong>Zoe flight ($500)</strong>.</div>
             <div class="package-bottom">
-                <span class="cost">$3,205 Cost</span>
+                <span class="cost">$5,405 Cost</span>
                 <span class="status positive">Target Model</span>
             </div>
         </div>
@@ -482,9 +482,9 @@
         <div class="package-btn" onclick="selectPackage('packageC')">
             <span class="package-tag">Package 3</span>
             <div class="package-title">Flagship Premiere (Opt C)</div>
-            <div class="package-desc">Broadcast 4K EPK video capture, full Kent AV lighting/sound, donor gala reception, studio backup. Asset creation investment.</div>
+            <div class="package-desc">Broadcast 4K EPK video capture, $500/performer + rep fees ($2,250), $600 TD + full design crew, full Kent AV gear, donor gala reception, studio backup.</div>
             <div class="package-bottom">
-                <span class="cost">$5,475 Cost</span>
+                <span class="cost">$7,650 Cost</span>
                 <span class="status investment">Capitalized Asset</span>
             </div>
         </div>
@@ -634,11 +634,11 @@
         packageA: {
             name: "Package 1: Lean Showcase",
             tag: "Package 1",
-            sub: "Guaranteed $350 cast base; $0 staff; in-house lighting op ($50); local promo",
+            sub: "4 dancers @ $250 floor ($1,000); $0 staff; in-house lighting op ($50); local promo",
             venue: 915,
             studio: 0,
             kentAV: 0,
-            artist: 350,
+            artist: 1000,
             staff: 0,
             tech: 50,
             ops: 165,
@@ -652,13 +652,13 @@
         packageB: {
             name: "Package 2: Sustainable Standard",
             tag: "Package 2 (Target)",
-            sub: "Fair contractor rates, staff stipends, 8-person tech crew, Kent AV, reception & Zoe flight ($500)",
+            sub: "Fair contractor rates ($500/performer, 4 dancers), $500 Tech Director, staff stipends, Kent AV, reception & Zoe flight ($500)",
             venue: 915,
             studio: 0,
             kentAV: 125,
-            artist: 200,
+            artist: 2000,
             staff: 250,
-            tech: 550,
+            tech: 950,
             ops: 565,
             events: 100,
             travel: 500,
@@ -670,13 +670,13 @@
         packageC: {
             name: "Package 3: Flagship Premiere",
             tag: "Package 3",
-            sub: "Broadcast 4K EPK video, full Kent AV gear, donor gala reception, studio backup. Capitalized asset.",
+            sub: "Broadcast 4K EPK video, full Kent AV gear, $500/performer + rep fees ($2,250), $600 TD + design crew, gala reception, studio backup.",
             venue: 915,
             studio: 200,
             kentAV: 350,
-            artist: 500,
+            artist: 2250,
             staff: 500,
-            tech: 1100,
+            tech: 1525,
             ops: 960,
             events: 250,
             travel: 700,
