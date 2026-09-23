@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea Creations — Universal Engagement & Tour Planner</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #121218;
+            --bg-surface-hover: #1c1c24;
+            --bg-card: #181820;
+            --border-color: #272730;
+            --border-light: #383844;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-purple: #8b5cf6;
+            --accent-purple-glow: rgba(139, 92, 246, 0.2);
+            --accent-indigo: #6366f1;
+            --accent-gold: #f59e0b;
+            --accent-blue: #0ea5e9;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Top Header */
+        .header-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.05));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 0 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-text p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .control-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .control-group select, .control-group input[type="number"] {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Mode Pill Switcher */
+        .pill-toggle {
+            display: flex;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .pill-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pill-btn.active {
+            background: var(--accent-purple);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+        }
+
+        /* KPI Ribbon */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px 22px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-light);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-purple);
+        }
+
+        .kpi-card.emerald::before { background: var(--accent-emerald); }
+        .kpi-card.rose::before { background: var(--accent-rose); }
+        .kpi-card.blue::before { background: var(--accent-blue); }
+        .kpi-card.gold::before { background: var(--accent-gold); }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .kpi-value {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .kpi-subtext {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Grid Layout for Planner */
+        .planner-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1080px) {
+            .planner-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Section */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 14px;
+        }
+
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-tag {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Scale Selector Tabs */
+        .scale-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .scale-option {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scale-option:hover {
+            border-color: var(--border-light);
+        }
+
+        .scale-option.active {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        .scale-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .scale-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        /* Table Design */
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .spec-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.05em;
+        }
+
+        .spec-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+        }
+
+        .spec-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-primary);
+        }
+
+        .spec-table td:last-child, .spec-table th:last-child {
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .spec-table .subtotal-row td {
+            font-weight: 700;
+            color: var(--text-primary);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 2px solid var(--border-light);
+            padding-top: 14px;
+        }
+
+        /* Sliders and Inputs */
+        .lever-row {
+            display: grid;
+            grid-template-columns: 140px 1fr 90px;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .lever-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .lever-slider {
+            width: 100%;
+            accent-color: var(--accent-purple);
+            cursor: pointer;
+        }
+
+        .lever-val {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-align: right;
+            color: var(--text-primary);
+        }
+
+        /* Collapsible Settlement Section */
+        .collapsible-trigger {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .collapsible-trigger:hover {
+            border-color: var(--border-light);
+            background: var(--bg-surface-hover);
+        }
+
+        .collapsible-body {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 24px;
+            margin-top: -12px;
+        }
+
+        .collapsible-body.open {
+            display: flex;
+        }
+
+        .settlement-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .settlement-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .input-group input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-purple);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border: none;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn-action:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline:hover {
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+
+        .variance-pos { color: var(--accent-emerald); font-weight: 700; }
+        .variance-neg { color: var(--accent-rose); font-weight: 700; }
+        .variance-neu { color: var(--text-secondary); }
+
+        /* Chart container */
+        .chart-box {
+            position: relative;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header-card">
+            <div class="brand-block">
+                <div class="brand-logo">A</div>
+                <div class="brand-text">
+                    <h1>Alithea Creations — Engagement Planner & Settlement</h1>
+                    <p>Decoupled Multi-Performance & Tour Operating Model (Tier 1 Deal Sheet)</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <div class="control-group">
+                    <label for="venueSelect">Venue Profile</label>
+                    <select id="venueSelect" onchange="handleVenueChange()">
+                        <option value="harvester">Harvester Arts Gallery (Wichita, KS)</option>
+                        <option value="wilner">WSU Wilner Black Box (Wichita, KS)</option>
+                        <option value="orpheum">Orpheum / Crown Regional Hall (450 cap)</option>
+                        <option value="college">College Fine Arts Tour (Bethel / Hesston)</option>
+                        <option value="custom">Custom Venue Spec...</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="runMultiplier">Run Length</label>
+                    <select id="runMultiplier" onchange="calculateModel()">
+                        <option value="1">1 Performance</option>
+                        <option value="2" selected>2 Performances (Weekend)</option>
+                        <option value="3">3 Performances (Fri-Sun)</option>
+                        <option value="4">4 Performances (2-Weekend Run)</option>
+                        <option value="5">5 Performances (Residency)</option>
+                    </select>
+                </div>
+
+                <div class="pill-toggle">
+                    <button class="pill-btn active" id="btnLocal" onclick="setTouringMode(false)">Local Run</button>
+                    <button class="pill-btn" id="btnTour" onclick="setTouringMode(true)">Tour / Travel</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI Summary Ribbon -->
+        <section class="kpi-grid">
+            <div class="kpi-card emerald" id="kpiGrossRevCard">
+                <div class="kpi-label">Projected Gross Revenue</div>
+                <div class="kpi-value" id="kpiGrossRev">$4,830</div>
+                <div class="kpi-subtext" id="kpiTicketsSold">172 total tickets @ $25 avg</div>
+            </div>
+
+            <div class="kpi-card rose" id="kpiTotalCostCard">
+                <div class="kpi-label">Projected Production Cost</div>
+                <div class="kpi-value" id="kpiTotalCost">$4,120</div>
+                <div class="kpi-subtext" id="kpiCostPerCap">$23.95 / audience capacity</div>
+            </div>
+
+            <div class="kpi-card" id="kpiNetMarginCard">
+                <div class="kpi-label">Net Profit / Loss</div>
+                <div class="kpi-value" id="kpiNetMargin">+$710</div>
+                <div class="kpi-subtext" id="kpiMarginPct">14.7% Net Return</div>
+            </div>
+
+            <div class="kpi-card gold" id="kpiBreakEvenCard">
+                <div class="kpi-label">Break-Even Point</div>
+                <div class="kpi-value" id="kpiBreakEvenTickets">147 Tickets</div>
+                <div class="kpi-subtext" id="kpiBreakEvenPct">63.9% run capacity required</div>
+            </div>
+        </section>
+
+        <!-- Main Workspace -->
+        <main class="planner-layout">
+            <!-- Left Column: Levers & Model Configuration -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Ensemble & Repertory Scale Selection -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>1. Artistic Ensemble Scale</span>
+                            <span class="badge-tag" id="activeScaleBadge">Option B: Core Ensemble (6 Dancers)</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">$150/dancer/show call + tech stipend</div>
+                    </div>
+
+                    <div class="scale-selector">
+                        <div class="scale-option" id="scaleOptA" onclick="selectScale('A')">
+                            <div class="scale-title">Option A: Chamber</div>
+                            <div class="scale-desc">4 Dancers • 3 Repertory Works • Minimalist staging</div>
+                        </div>
+                        <div class="scale-option active" id="scaleOptB" onclick="selectScale('B')">
+                            <div class="scale-title">Option B: Core Rep</div>
+                            <div class="scale-desc">6 Dancers • 4 Works (incl. Electric Nights) • Recommended</div>
+                        </div>
+                        <div class="scale-option" id="scaleOptC" onclick="selectScale('C')">
+                            <div class="scale-title">Option C: Grand Ensemble</div>
+                            <div class="scale-desc">12 Dancers • Full Company (Angels Rising) • Guest Artists</div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Repertoire Display -->
+                    <div style="background: var(--bg-card); border-radius: 12px; padding: 14px 18px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;">Scheduled Program & Cast Calls</div>
+                        <div id="repertoireList" style="display: flex; flex-direction: column; gap: 8px; font-size: 0.84rem;">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Venue & Production Overhead Levers -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span>2. Facility, Technical Crew & Logistics</span>
+                            <span class="badge-tag" id="venueProfileBadge">Harvester Arts</span>
+                        </div>
+                        <button class="btn-outline" onclick="resetToPreset()">Reset to Preset</button>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="lever-row">
+                            <span class="lever-label">Audience Capacity</span>
+                            <input type="range" class="lever-slider" id="inputCapacity" min="50" max="600" step="5" value="115" oninput="calculateModel()">
+                            <span class="lever-val" id="valCapacity">115 seats</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Facility Base Fee</span>
+                            <input type="range" class="lever-slider" id="inputFacilityBase" min="0" max="3000" step="50" value="400" oninput="calculateModel()">
+                            <span class="lever-val" id="valFacilityBase">$400</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Load-in / Rehearsal OT</span>
+                            <input type="range" class="lever-slider" id="inputOvertime" min="0" max="1200" step="30" value="180" oninput="calculateModel()">
+                            <span class="lever-val" id="valOvertime">$180 (3 hrs)</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Marley Floor & Tape</span>
+                            <input type="range" class="lever-slider" id="inputMarley" min="0" max="800" step="25" value="250" oninput="calculateModel()">
+                            <span class="lever-val" id="valMarley">$250</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Lighting & Audio Rig</span>
+                            <input type="range" class="lever-slider" id="inputTechRig" min="0" max="1500" step="50" value="500" oninput="calculateModel()">
+                            <span class="lever-val" id="valTechRig">$500</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Stage Mgr & Tech Crew</span>
+                            <input type="range" class="lever-slider" id="inputCrewLabor" min="200" max="2500" step="50" value="650" oninput="calculateModel()">
+                            <span class="lever-val" id="valCrewLabor">$650</span>
+                        </div>
+
+                        <!-- Touring Section (Conditional) -->
+                        <div id="touringLevers" style="display: none; background: rgba(99, 102, 241, 0.06); border-radius: 10px; padding: 12px 16px; margin-top: 8px;">
+                            <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-indigo); margin-bottom: 8px;">TOUR LOGISTICS & TRAVEL EXPENSES</div>
+                            <div class="lever-row" style="border: none;">
+                                <span class="lever-label">Hotel Rooms ($120/nt)</span>
+                                <input type="range" class="lever-slider" id="inputHotelRooms" min="0" max="8" step="1" value="3" oninput="calculateModel()">
+                                <span class="lever-val" id="valHotelRooms">3 rooms ($720)</span>
+                            </div>
+                            <div class="lever-row" style="border: none;">
+                                <span class="lever-label">Per Diem ($45/day/person)</span>
+                                <input type="range" class="lever-slider" id="inputPerDiemDays" min="0" max="5" step="1" value="2" oninput="calculateModel()">
+                                <span class="lever-val" id="valPerDiem">2 days ($720)</span>
+                            </div>
+                            <div class="lever-row" style="border: none;">
+                                <span class="lever-label">Travel / Mileage / Van</span>
+                                <input type="range" class="lever-slider" id="inputVanTravel" min="0" max="1000" step="50" value="350" oninput="calculateModel()">
+                                <span class="lever-val" id="valVanTravel">$350</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Revenue & Pricing Model -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">3. Admissions & Ancillary Revenue</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Kansas / Wichita 7.5% Tax & Stripe/Zeffy Fees Built-in</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="lever-row">
+                            <span class="lever-label">Run Capacity Sold</span>
+                            <input type="range" class="lever-slider" id="inputAttendancePct" min="20" max="100" step="5" value="75" oninput="calculateModel()">
+                            <span class="lever-val" id="valAttendancePct">75% (172 seats)</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Avg Ticket Price (Net)</span>
+                            <input type="range" class="lever-slider" id="inputAvgTicketPrice" min="15" max="60" step="2.5" value="26" oninput="calculateModel()">
+                            <span class="lever-val" id="valAvgTicketPrice">$26.00</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Merchandise & Concessions</span>
+                            <input type="range" class="lever-slider" id="inputMerch" min="0" max="1000" step="25" value="200" oninput="calculateModel()">
+                            <span class="lever-val" id="valMerch">$200 / run</span>
+                        </div>
+
+                        <div class="lever-row">
+                            <span class="lever-label">Patron Underwriting / Ads</span>
+                            <input type="range" class="lever-slider" id="inputUnderwriting" min="0" max="3000" step="100" value="500" oninput="calculateModel()">
+                            <span class="lever-val" id="valUnderwriting">$500</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Cost Breakdown Chart & Budget P&L Summary -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Cost Doughnut Chart -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Expense Allocation</div>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                    <div id="costChartLegend" style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.75rem; justify-content: center; color: var(--text-secondary);">
+                        <!-- Legend items populated via JS -->
+                    </div>
+                </section>
+
+                <!-- Detailed Financial Summary Table -->
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Pro-Forma Deal Summary</div>
+                        <button class="btn-outline" onclick="copyDealSummary()">Copy Summary</button>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Financial Category</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gross Box Office Sales</td>
+                                <td id="tblBoxOffice">$4,472</td>
+                            </tr>
+                            <tr>
+                                <td>Merchandise & Sponsorships</td>
+                                <td id="tblAncillary">$700</td>
+                            </tr>
+                            <tr>
+                                <td>Ticketing & CC Processing Fees (3.5%)</td>
+                                <td id="tblFees" style="color: var(--accent-rose);">-$156</td>
+                            </tr>
+                            <tr class="subtotal-row">
+                                <td>TOTAL NET REVENUE</td>
+                                <td id="tblNetRevenue" style="color: var(--accent-emerald);">$5,016</td>
+                            </tr>
+                            <tr>
+                                <td>Artistic Labor (Dancers & Choreo)</td>
+                                <td id="tblArtisticLabor">$1,800</td>
+                            </tr>
+                            <tr>
+                                <td>Technical Crew & Stage Management</td>
+                                <td id="tblCrewLabor">$750</td>
+                            </tr>
+                            <tr>
+                                <td>Venue Rental, Overtime & Custodial</td>
+                                <td id="tblVenueTotal">$680</td>
+                            </tr>
+                            <tr>
+                                <td>Production Rig (Lighting, Marley, Audio)</td>
+                                <td id="tblProductionRig">$750</td>
+                            </tr>
+                            <tr id="tblTouringRow" style="display: none;">
+                                <td>Tour Logistics (Hotel, Per Diem, Van)</td>
+                                <td id="tblTouringCost">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Marketing, Playbills & Insurance ($1M CGL)</td>
+                                <td id="tblMarketingOps">$350</td>
+                            </tr>
+                            <tr class="subtotal-row">
+                                <td>TOTAL PRODUCTION EXPENSE</td>
+                                <td id="tblTotalExpense" style="color: var(--accent-rose);">$4,330</td>
+                            </tr>
+                            <tr style="font-weight: 800; font-size: 1rem;">
+                                <td style="padding-top: 14px;">NET MARGIN (PROFIT / LOSS)</td>
+                                <td id="tblFinalNet" style="padding-top: 14px; color: var(--accent-emerald);">+$686</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+
+        <!-- Collapsible Section: Post-Show Actuals Settlement Sandbox -->
+        <section style="display: flex; flex-direction: column;">
+            <div class="collapsible-trigger" onclick="toggleSettlement()">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="font-size: 1.1rem; font-weight: 700; font-family: var(--font-display);">Post-Show Actuals Settlement & Variance Sandbox</div>
+                    <span class="badge-tag">Tier 1 Closeout Ledger</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;" id="settlementToggleText">Click to Expand Settlement Inputs ▼</div>
+            </div>
+
+            <div class="collapsible-body" id="settlementBody">
+                <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                    Enter reconciled gate reports and finalized invoices post-engagement. Variances calculate automatically against the selected pro-forma deal parameters above.
+                </div>
+
+                <div class="settlement-grid">
+                    <!-- Revenue Actuals -->
+                    <div style="background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+                        <div style="font-weight: 700; font-size: 0.95rem; color: var(--accent-emerald);">Actual Revenue Realized</div>
+                        <div class="input-group">
+                            <label>Actual Tickets Sold (Total Across Run)</label>
+                            <input type="number" id="actTickets" value="165" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Net Ticket Proceeds (Bank Cleared)</label>
+                            <input type="number" id="actTicketRevenue" value="4125" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Actual Merchandise & Concessions Cleared</label>
+                            <input type="number" id="actMerchRevenue" value="230" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Underwriting / Sponsor Cash Collected</label>
+                            <input type="number" id="actUnderwritingRevenue" value="500" oninput="calculateSettlement()">
+                        </div>
+                    </div>
+
+                    <!-- Expense Actuals -->
+                    <div style="background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+                        <div style="font-weight: 700; font-size: 0.95rem; color: var(--accent-rose);">Actual Expenses Incurred</div>
+                        <div class="input-group">
+                            <label>Total Artistic Labor Paid (1099 Disbursed)</label>
+                            <input type="number" id="actArtisticLabor" value="1800" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Technical Crew Labor Disbursed</label>
+                            <input type="number" id="actCrewLabor" value="750" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Final Facility & Overtime Settlement Invoice</label>
+                            <input type="number" id="actVenueInvoice" value="720" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Production Rig, Freight & Marley Supplies</label>
+                            <input type="number" id="actRiggingCosts" value="750" oninput="calculateSettlement()">
+                        </div>
+                        <div class="input-group">
+                            <label>Marketing, Printing, CGL Rider & Ops</label>
+                            <input type="number" id="actMarketingOps" value="380" oninput="calculateSettlement()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settlement Reconciliation Summary -->
+                <div style="background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div style="font-weight: 700; font-size: 0.95rem;">Engagement Settlement Variance Ledger</div>
+                        <button class="btn-action" onclick="exportSettlementToClipboard()">Export Settlement Record</button>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Reconciliation Item</th>
+                                <th>Pro-Forma Budget</th>
+                                <th>Final Actuals</th>
+                                <th>Variance ($)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="settlementTableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Preset Venue Data
+        const VENUE_PRESETS = {
+            harvester: {
+                name: "Harvester Arts Gallery",
+                capacity: 115,
+                facilityBase: 400,
+                overtime: 180,
+                marley: 250,
+                techRig: 500,
+                crewLabor: 650,
+                isTouring: false
+            },
+            wilner: {
+                name: "WSU Wilner Black Box",
+                capacity: 160,
+                facilityBase: 750,
+                overtime: 120,
+                marley: 150,
+                techRig: 200,
+                crewLabor: 400,
+                isTouring: false
+            },
+            orpheum: {
+                name: "Orpheum / Crown Regional Hall",
+                capacity: 450,
+                facilityBase: 2200,
+                overtime: 300,
+                marley: 350,
+                techRig: 900,
+                crewLabor: 1400,
+                isTouring: false
+            },
+            college: {
+                name: "College Fine Arts Tour (Bethel / Hesston)",
+                capacity: 250,
+                facilityBase: 600,
+                overtime: 0,
+                marley: 200,
+                techRig: 350,
+                crewLabor: 500,
+                isTouring: true
+            },
+            custom: {
+                name: "Custom Venue Specification",
+                capacity: 150,
+                facilityBase: 500,
+                overtime: 150,
+                marley: 250,
+                techRig: 400,
+                crewLabor: 600,
+                isTouring: false
+            }
+        };
+
+        // Repertory & Scale Data
+        const SCALE_CONFIGS = {
+            A: {
+                label: "Option A: Chamber (4 Dancers)",
+                headcount: 4,
+                rehearsalHours: 12,
+                rehearsalRate: 20,
+                showCallFee: 150,
+                works: [
+                    { title: "Electric Nights (Abridged Quartet)", cast: 4, time: "18m", tech: "Medium" },
+                    { title: "In Visible Light (Duet)", cast: 2, time: "12m", tech: "Low" },
+                    { title: "Solo Resonance", cast: 1, time: "8m", tech: "Minimal" }
+                ]
+            },
+            B: {
+                label: "Option B: Core Rep (6 Dancers)",
+                headcount: 6,
+                rehearsalHours: 16,
+                rehearsalRate: 20,
+                showCallFee: 150,
+                works: [
+                    { title: "Electric Nights (Standard Sextet)", cast: 6, time: "22m", tech: "High" },
+                    { title: "Threshold Whispers (Trio)", cast: 3, time: "14m", tech: "Medium" },
+                    { title: "Dualities (Duet)", cast: 2, time: "11m", tech: "Low" },
+                    { title: "Ensemble Finale", cast: 6, time: "9m", tech: "High" }
+                ]
+            },
+            C: {
+                label: "Option C: Grand Ensemble (12 Dancers)",
+                headcount: 12,
+                rehearsalHours: 24,
+                rehearsalRate: 20,
+                showCallFee: 150,
+                works: [
+                    { title: "Angels Rising (Full Ensemble)", cast: 12, time: "28m", tech: "Very High" },
+                    { title: "Electric Nights (Expanded)", cast: 8, time: "24m", tech: "High" },
+                    { title: "Intermezzo Duets", cast: 4, time: "12m", tech: "Medium" },
+                    { title: "Repertory Finale", cast: 12, time: "15m", tech: "Very High" }
+                ]
+            }
+        };
+
+        let currentScale = 'B';
+        let isTouringActive = false;
+        let chartInstance = null;
+
+        // Model Output Cache
+        let modelCache = {};
+
+        function init() {
+            initChart();
+            renderScaleDetails();
+            calculateModel();
+        }
+
+        function handleVenueChange() {
+            const venueKey = document.getElementById('venueSelect').value;
+            const preset = VENUE_PRESETS[venueKey];
+            
+            document.getElementById('inputCapacity').value = preset.capacity;
+            document.getElementById('inputFacilityBase').value = preset.facilityBase;
+            document.getElementById('inputOvertime').value = preset.overtime;
+            document.getElementById('inputMarley').value = preset.marley;
+            document.getElementById('inputTechRig').value = preset.techRig;
+            document.getElementById('inputCrewLabor').value = preset.crewLabor;
+
+            document.getElementById('venueProfileBadge').textContent = preset.name;
+            setTouringMode(preset.isTouring);
+            calculateModel();
+        }
+
+        function resetToPreset() {
+            handleVenueChange();
+        }
+
+        function setTouringMode(isTour) {
+            isTouringActive = isTour;
+            document.getElementById('btnLocal').classList.toggle('active', !isTour);
+            document.getElementById('btnTour').classList.toggle('active', isTour);
+            document.getElementById('touringLevers').style.display = isTour ? 'block' : 'none';
+            document.getElementById('tblTouringRow').style.display = isTour ? 'table-row' : 'none';
+            calculateModel();
+        }
+
+        function selectScale(scaleKey) {
+            currentScale = scaleKey;
+            ['A', 'B', 'C'].forEach(k => {
+                document.getElementById('scaleOpt' + k).classList.toggle('active', k === scaleKey);
+            });
+            document.getElementById('activeScaleBadge').textContent = SCALE_CONFIGS[scaleKey].label;
+            renderScaleDetails();
+            calculateModel();
+        }
+
+        function renderScaleDetails() {
+            const config = SCALE_CONFIGS[currentScale];
+            const listEl = document.getElementById('repertoireList');
+            listEl.innerHTML = '';
+
+            config.works.forEach((w, idx) => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.alignItems = 'center';
+                row.style.padding = '4px 0';
+                row.style.borderBottom = '1px dashed rgba(255, 255, 255, 0.05)';
+                row.innerHTML = `
+                    <div style="font-weight: 600; color: var(--text-primary);">${idx + 1}. ${w.title}</div>
+                    <div style="display: flex; gap: 12px; color: var(--text-muted); font-size: 0.78rem;">
+                        <span>${w.cast} Dancers</span>
+                        <span>${w.time}</span>
+                        <span class="badge-tag">${w.tech} Tech</span>
+                    </div>
+                `;
+                listEl.appendChild(row);
+            });
+        }
+
+        function calculateModel() {
+            // Read UI inputs
+            const runMultiplier = parseInt(document.getElementById('runMultiplier').value) || 1;
+            const capacityPerShow = parseInt(document.getElementById('inputCapacity').value) || 100;
+            const facilityBase = parseFloat(document.getElementById('inputFacilityBase').value) || 0;
+            const overtime = parseFloat(document.getElementById('inputOvertime').value) || 0;
+            const marley = parseFloat(document.getElementById('inputMarley').value) || 0;
+            const techRig = parseFloat(document.getElementById('inputTechRig').value) || 0;
+            const crewLabor = parseFloat(document.getElementById('inputCrewLabor').value) || 0;
+
+            const attendancePct = parseInt(document.getElementById('inputAttendancePct').value) || 75;
+            const avgTicketPrice = parseFloat(document.getElementById('inputAvgTicketPrice').value) || 25;
+            const merchTotal = parseFloat(document.getElementById('inputMerch').value) || 0;
+            const underwritingTotal = parseFloat(document.getElementById('inputUnderwriting').value) || 0;
+
+            // Touring Levers
+            let touringCost = 0;
+            if (isTouringActive) {
+                const rooms = parseInt(document.getElementById('inputHotelRooms').value) || 0;
+                const pDays = parseInt(document.getElementById('inputPerDiemDays').value) || 0;
+                const van = parseFloat(document.getElementById('inputVanTravel').value) || 0;
+                const headcount = SCALE_CONFIGS[currentScale].headcount + 2; // dancers + 2 crew
+                touringCost = (rooms * 120 * (runMultiplier > 1 ? 2 : 1)) + (pDays * 45 * headcount) + van;
+            }
+
+            // Sync Slider Display Labels
+            document.getElementById('valCapacity').textContent = `${capacityPerShow} seats/show`;
+            document.getElementById('valFacilityBase').textContent = `$${facilityBase.toLocaleString()}`;
+            document.getElementById('valOvertime').textContent = `$${overtime.toLocaleString()}`;
+            document.getElementById('valMarley').textContent = `$${marley.toLocaleString()}`;
+            document.getElementById('valTechRig').textContent = `$${techRig.toLocaleString()}`;
+            document.getElementById('valCrewLabor').textContent = `$${crewLabor.toLocaleString()}`;
+            document.getElementById('valAvgTicketPrice').textContent = `$${avgTicketPrice.toFixed(2)}`;
+            document.getElementById('valMerch').textContent = `$${merchTotal.toLocaleString()} / run`;
+            document.getElementById('valUnderwriting').textContent = `$${underwritingTotal.toLocaleString()}`;
+
+            const totalCapAcrossRun = capacityPerShow * runMultiplier;
+            const ticketsSold = Math.round(totalCapAcrossRun * (attendancePct / 100));
+            document.getElementById('valAttendancePct').textContent = `${attendancePct}% (${ticketsSold} seats total)`;
+
+            if (isTouringActive) {
+                const rooms = parseInt(document.getElementById('inputHotelRooms').value) || 0;
+                const pDays = parseInt(document.getElementById('inputPerDiemDays').value) || 0;
+                const van = parseFloat(document.getElementById('inputVanTravel').value) || 0;
+                const headcount = SCALE_CONFIGS[currentScale].headcount + 2;
+                document.getElementById('valHotelRooms').textContent = `${rooms} rooms ($${(rooms * 120 * (runMultiplier > 1 ? 2 : 1)).toLocaleString()})`;
+                document.getElementById('valPerDiem').textContent = `${pDays} days ($${(pDays * 45 * headcount).toLocaleString()})`;
+                document.getElementById('valVanTravel').textContent = `$${van.toLocaleString()}`;
+            }
+
+            // Calculations
+            const grossTicketSales = ticketsSold * avgTicketPrice;
+            const merchantFees = grossTicketSales * 0.035; // 3.5% avg card fee
+            const netTicketRevenue = grossTicketSales - merchantFees;
+            const totalNetRevenue = netTicketRevenue + merchTotal + underwritingTotal;
+
+            // Costs
+            const scale = SCALE_CONFIGS[currentScale];
+            // Rehearsal fixed stipend + show call fee per performance
+            const dancerRehearsalPay = scale.headcount * scale.rehearsalHours * scale.rehearsalRate;
+            const dancerPerformancePay = scale.headcount * scale.showCallFee * runMultiplier;
+            const totalArtisticLabor = dancerRehearsalPay + dancerPerformancePay;
+
+            // Tech Crew: base setup call + incremental per-show run call ($120/show)
+            const totalCrewLabor = crewLabor + ((runMultiplier - 1) * 150);
+
+            // Venue: base + overtime (setup/tech) + per-show custodial increment ($50/show)
+            const totalVenueCost = facilityBase + overtime + ((runMultiplier - 1) * 75);
+
+            // Rig: fixed rental / marley prep
+            const totalRigCost = marley + techRig;
+
+            // Marketing & Insurance
+            const marketingOps = 300 + (runMultiplier * 35); // Insurance rider + flyers
+
+            const totalExpenses = totalArtisticLabor + totalCrewLabor + totalVenueCost + totalRigCost + touringCost + marketingOps;
+            const netMargin = totalNetRevenue - totalExpenses;
+
+            // Break-even
+            // Break-even tickets = Total Expenses / (Avg Price * (1 - fee))
+            const netPerTicket = avgTicketPrice * (1 - 0.035);
+            const netFixedOffset = underwritingTotal + merchTotal;
+            const netExpensesNeededFromTickets = Math.max(0, totalExpenses - netFixedOffset);
+            const breakEvenTickets = Math.ceil(netExpensesNeededFromTickets / netPerTicket);
+            const breakEvenPct = ((breakEvenTickets / totalCapAcrossRun) * 100).toFixed(1);
+
+            // Store in Cache
+            modelCache = {
+                grossTicketSales,
+                merchantFees,
+                netTicketRevenue,
+                merchTotal,
+                underwritingTotal,
+                totalNetRevenue,
+                totalArtisticLabor,
+                totalCrewLabor,
+                totalVenueCost,
+                totalRigCost,
+                touringCost,
+                marketingOps,
+                totalExpenses,
+                netMargin,
+                ticketsSold,
+                totalCapAcrossRun,
+                breakEvenTickets,
+                breakEvenPct,
+                avgTicketPrice
+            };
+
+            // Update KPIs
+            document.getElementById('kpiGrossRev').textContent = `$${Math.round(grossTicketSales + merchTotal + underwritingTotal).toLocaleString()}`;
+            document.getElementById('kpiTicketsSold').textContent = `${ticketsSold} seats (${attendancePct}%) @ $${avgTicketPrice.toFixed(0)} avg`;
+            
+            document.getElementById('kpiTotalCost').textContent = `$${Math.round(totalExpenses).toLocaleString()}`;
+            document.getElementById('kpiCostPerCap').textContent = `$${(totalExpenses / totalCapAcrossRun).toFixed(2)} / total capacity`;
+
+            const marginCard = document.getElementById('kpiNetMarginCard');
+            const netFormatted = (netMargin >= 0 ? '+' : '-') + '$' + Math.abs(Math.round(netMargin)).toLocaleString();
+            document.getElementById('kpiNetMargin').textContent = netFormatted;
+            const marginPct = ((netMargin / totalNetRevenue) * 100).toFixed(1);
+            document.getElementById('kpiMarginPct').textContent = `${marginPct}% Net Return on Revenue`;
+            
+            marginCard.className = 'kpi-card ' + (netMargin >= 0 ? 'emerald' : 'rose');
+
+            document.getElementById('kpiBreakEvenTickets').textContent = `${breakEvenTickets} Tickets`;
+            document.getElementById('kpiBreakEvenPct').textContent = `${breakEvenPct}% run capacity required`;
+
+            // Update Summary Table
+            document.getElementById('tblBoxOffice').textContent = `$${Math.round(grossTicketSales).toLocaleString()}`;
+            document.getElementById('tblAncillary').textContent = `$${Math.round(merchTotal + underwritingTotal).toLocaleString()}`;
+            document.getElementById('tblFees').textContent = `-$${Math.round(merchantFees).toLocaleString()}`;
+            document.getElementById('tblNetRevenue').textContent = `$${Math.round(totalNetRevenue).toLocaleString()}`;
+
+            document.getElementById('tblArtisticLabor').textContent = `$${Math.round(totalArtisticLabor).toLocaleString()}`;
+            document.getElementById('tblCrewLabor').textContent = `$${Math.round(totalCrewLabor).toLocaleString()}`;
+            document.getElementById('tblVenueTotal').textContent = `$${Math.round(totalVenueCost).toLocaleString()}`;
+            document.getElementById('tblProductionRig').textContent = `$${Math.round(totalRigCost).toLocaleString()}`;
+            document.getElementById('tblTouringCost').textContent = `$${Math.round(touringCost).toLocaleString()}`;
+            document.getElementById('tblMarketingOps').textContent = `$${Math.round(marketingOps).toLocaleString()}`;
+            document.getElementById('tblTotalExpense').textContent = `$${Math.round(totalExpenses).toLocaleString()}`;
+
+            const finalNetEl = document.getElementById('tblFinalNet');
+            finalNetEl.textContent = netFormatted;
+            finalNetEl.style.color = netMargin >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+
+            updateChart([totalArtisticLabor, totalCrewLabor, totalVenueCost, totalRigCost, touringCost, marketingOps]);
+            calculateSettlement();
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Artistic Labor', 'Tech & Crew', 'Venue Rental', 'Rig & Lighting', 'Tour Travel', 'Marketing & Ops'],
+                    datasets: [{
+                        data: [1800, 750, 680, 750, 0, 350],
+                        backgroundColor: [
+                            '#8b5cf6',
+                            '#6366f1',
+                            '#0ea5e9',
+                            '#f59e0b',
+                            '#ec4899',
+                            '#10b981'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#181820'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: $${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(dataValues) {
+            if (!chartInstance) return;
+            chartInstance.data.datasets[0].data = dataValues;
+            chartInstance.update();
+
+            // Render legend
+            const legendEl = document.getElementById('costChartLegend');
+            legendEl.innerHTML = '';
+            const labels = chartInstance.data.labels;
+            const colors = chartInstance.data.datasets[0].backgroundColor;
+
+            labels.forEach((label, i) => {
+                if (dataValues[i] > 0) {
+                    const item = document.createElement('div');
+                    item.style.display = 'flex';
+                    item.style.alignItems = 'center';
+                    item.style.gap = '6px';
+                    item.innerHTML = `<span style="width: 8px; height: 8px; border-radius: 50%; background: ${colors[i]};"></span>${label} ($${Math.round(dataValues[i]).toLocaleString()})`;
+                    legendEl.appendChild(item);
+                }
+            });
+        }
+
+        function toggleSettlement() {
+            const body = document.getElementById('settlementBody');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open', !isOpen);
+            document.getElementById('settlementToggleText').textContent = isOpen ? 'Click to Expand Settlement Inputs ▼' : 'Collapse Settlement Inputs ▲';
+        }
+
+        function calculateSettlement() {
+            if (!modelCache.totalExpenses) return;
+
+            const actTickets = parseInt(document.getElementById('actTickets').value) || 0;
+            const actTicketRev = parseFloat(document.getElementById('actTicketRevenue').value) || 0;
+            const actMerch = parseFloat(document.getElementById('actMerchRevenue').value) || 0;
+            const actUnderwriting = parseFloat(document.getElementById('actUnderwritingRevenue').value) || 0;
+
+            const actArtLabor = parseFloat(document.getElementById('actArtisticLabor').value) || 0;
+            const actCrewLabor = parseFloat(document.getElementById('actCrewLabor').value) || 0;
+            const actVenue = parseFloat(document.getElementById('actVenueInvoice').value) || 0;
+            const actRig = parseFloat(document.getElementById('actRiggingCosts').value) || 0;
+            const actMktg = parseFloat(document.getElementById('actMarketingOps').value) || 0;
+
+            const totalActRev = actTicketRev + actMerch + actUnderwriting;
+            const totalActExp = actArtLabor + actCrewLabor + actVenue + actRig + actMktg;
+            const actNet = totalActRev - totalActExp;
+
+            const revVariance = totalActRev - modelCache.totalNetRevenue;
+            const expVariance = modelCache.totalExpenses - totalActExp; // Positive is favorable (under budget)
+            const netVariance = actNet - modelCache.netMargin;
+
+            const rows = [
+                {
+                    item: "Admissions & Ticket Yield",
+                    budget: modelCache.netTicketRevenue,
+                    actual: actTicketRev,
+                    variance: actTicketRev - modelCache.netTicketRevenue
+                },
+                {
+                    item: "Ancillary Revenue (Merch & Underwriting)",
+                    budget: modelCache.merchTotal + modelCache.underwritingTotal,
+                    actual: actMerch + actUnderwriting,
+                    variance: (actMerch + actUnderwriting) - (modelCache.merchTotal + modelCache.underwritingTotal)
+                },
+                {
+                    item: "Artistic Labor Payouts",
+                    budget: modelCache.totalArtisticLabor,
+                    actual: actArtLabor,
+                    variance: modelCache.totalArtisticLabor - actArtLabor,
+                    isExpense: true
+                },
+                {
+                    item: "Venue & Overtime Invoice",
+                    budget: modelCache.totalVenueCost,
+                    actual: actVenue,
+                    variance: modelCache.totalVenueCost - actVenue,
+                    isExpense: true
+                },
+                {
+                    item: "Technical Crew & Production Rig",
+                    budget: modelCache.totalCrewLabor + modelCache.totalRigCost,
+                    actual: actCrewLabor + actRig,
+                    variance: (modelCache.totalCrewLabor + modelCache.totalRigCost) - (actCrewLabor + actRig),
+                    isExpense: true
+                },
+                {
+                    item: "NET SETTLEMENT MARGIN",
+                    budget: modelCache.netMargin,
+                    actual: actNet,
+                    variance: netVariance,
+                    isTotal: true
+                }
+            ];
+
+            const tbody = document.getElementById('settlementTableBody');
+            tbody.innerHTML = '';
+
+            rows.forEach(r => {
+                const tr = document.createElement('tr');
+                if (r.isTotal) {
+                    tr.style.fontWeight = '800';
+                    tr.style.fontSize = '0.95rem';
+                    tr.style.borderTop = '2px solid var(--border-light)';
+                }
+
+                const varFormatted = (r.variance >= 0 ? '+' : '-') + '$' + Math.abs(Math.round(r.variance)).toLocaleString();
+                const varClass = r.variance > 0 ? 'variance-pos' : (r.variance < 0 ? 'variance-neg' : 'variance-neu');
+                const statusTag = r.variance >= 0 ? '<span style="color: var(--accent-emerald);">● Favorable</span>' : '<span style="color: var(--accent-rose);">▲ Over Budget</span>';
+
+                tr.innerHTML = `
+                    <td>${r.item}</td>
+                    <td>$${Math.round(r.budget).toLocaleString()}</td>
+                    <td>$${Math.round(r.actual).toLocaleString()}</td>
+                    <td class="${varClass}">${varFormatted}</td>
+                    <td>${statusTag}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function copyDealSummary() {
+            const summaryText = `ALITHEA CREATIONS — ENGAGEMENT PRO-FORMA DEAL SHEET
+Venue: ${document.getElementById('venueProfileBadge').textContent}
+Scale: ${SCALE_CONFIGS[currentScale].label}
+Performances: ${document.getElementById('runMultiplier').value} Show(s)
+Capacity: ${modelCache.totalCapAcrossRun} Total Seats (${modelCache.ticketsSold} projected sold @ $${modelCache.avgTicketPrice.toFixed(2)})
+
+FINANCIAL PROJECTIONS:
+- Net Ticket Revenue: $${Math.round(modelCache.netTicketRevenue).toLocaleString()}
+- Ancillary & Sponsorships: $${Math.round(modelCache.merchTotal + modelCache.underwritingTotal).toLocaleString()}
+- TOTAL NET REVENUE: $${Math.round(modelCache.totalNetRevenue).toLocaleString()}
+
+PRODUCTION EXPENSES:
+- Artistic Labor: $${Math.round(modelCache.totalArtisticLabor).toLocaleString()}
+- Technical Crew: $${Math.round(modelCache.totalCrewLabor).toLocaleString()}
+- Venue & Facility: $${Math.round(modelCache.totalVenueCost).toLocaleString()}
+- Rig & Lighting: $${Math.round(modelCache.totalRigCost).toLocaleString()}
+- Marketing & Ops: $${Math.round(modelCache.marketingOps).toLocaleString()}
+${isTouringActive ? `- Tour Travel & Per Diem: $${Math.round(modelCache.touringCost).toLocaleString()}\n` : ''}- TOTAL PRODUCTION EXPENSES: $${Math.round(modelCache.totalExpenses).toLocaleString()}
+
+PROJECTED NET MARGIN: ${(modelCache.netMargin >= 0 ? '+' : '-') + '$' + Math.abs(Math.round(modelCache.netMargin)).toLocaleString()}
+BREAK-EVEN TICKETS: ${modelCache.breakEvenTickets} tickets (${modelCache.breakEvenPct}% of capacity)`;
+
+            navigator.clipboard.writeText(summaryText).then(() => {
+                alert('Deal Sheet summary copied to clipboard for Notion / Google Sheets!');
+            });
+        }
+
+        function exportSettlementToClipboard() {
+            const actTickets = document.getElementById('actTickets').value;
+            const actRev = document.getElementById('actTicketRevenue').value;
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                venue: document.getElementById('venueProfileBadge').textContent,
+                runLength: document.getElementById('runMultiplier').value,
+                budget: modelCache,
+                reconciledActuals: {
+                    ticketsSold: actTickets,
+                    netTicketRevenue: actRev,
+                    merchandise: document.getElementById('actMerchRevenue').value,
+                    artisticLabor: document.getElementById('actArtisticLabor').value,
+                    crewLabor: document.getElementById('actCrewLabor').value,
+                    venueBill: document.getElementById('actVenueInvoice').value,
+                    productionRig: document.getElementById('actRiggingCosts').value,
+                    marketingOps: document.getElementById('actMarketingOps').value
+                }
+            };
+
+            navigator.clipboard.writeText(JSON.stringify(exportData, null, 2)).then(() => {
+                alert('Settlement JSON Record copied to clipboard!');
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
