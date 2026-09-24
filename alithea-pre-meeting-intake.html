@@ -243,27 +243,27 @@
         }
 
         .detail-field input {
-            background: #25263a;
-            border: 1.5px solid #4a4d6f;
+            background: #2e3452;
+            border: 1.5px solid #5d6391;
             border-radius: 8px;
             padding: 8px 10px;
             color: #ffffff;
             font-family: var(--font-body);
-            font-size: 0.86rem;
+            font-size: 0.88rem;
             font-weight: 600;
             outline: none;
             transition: all 0.2s ease;
         }
 
         .detail-field input:hover {
-            background: #2c2e47;
-            border-color: #6d719e;
+            background: #363d63;
+            border-color: #858cc5;
         }
 
         .detail-field input:focus {
-            background: #2d2f4a;
+            background: #363d63;
             border-color: var(--accent-purple);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35);
         }
 
         /* Sliders */
@@ -325,30 +325,41 @@
         }
 
         .text-group input, .text-group textarea, .text-group select {
-            background: #25263a;
-            border: 1.5px solid #4a4d6f;
+            background: #2e3452;
+            border: 1.5px solid #5d6391;
             border-radius: 10px;
             padding: 12px 14px;
             color: #ffffff;
             font-family: var(--font-body);
             font-size: 0.88rem;
+            font-weight: 600;
             outline: none;
             transition: all 0.2s ease;
         }
 
-        .text-group input::placeholder, .text-group textarea::placeholder {
-            color: #9497b8;
+        /* Sample text / placeholder: lighter and italicized so it is clearly distinct from entered data */
+        ::placeholder, .text-group input::placeholder, .text-group textarea::placeholder {
+            color: #cbd0f6 !important;
+            font-style: italic !important;
+            font-weight: 400 !important;
+            opacity: 0.88 !important;
         }
 
         .text-group input:hover, .text-group textarea:hover, .text-group select:hover {
-            background: #2c2e47;
-            border-color: #6d719e;
+            background: #363d63;
+            border-color: #858cc5;
         }
 
         .text-group input:focus, .text-group textarea:focus, .text-group select:focus {
-            background: #2d2f4a;
+            background: #363d63;
             border-color: var(--accent-purple);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35);
+        }
+
+        select option {
+            background: #24273f;
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .btn-add {
@@ -465,7 +476,7 @@
                                 <li>Audition windows, academic breaks, or dancer blackout dates</li>
                             </ul>
                         </div>
-                        <input type="text" id="calendarCheck" placeholder="Who can check local/WSU calendars, and are there any known blackouts or competing events?">
+                        <input type="text" id="calendarCheck" placeholder="e.g. Nick checking WSU dance calendar; Zoe checking regional festival blackouts...">
                     </div>
                 </section>
 
@@ -497,11 +508,11 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="text-group">
                             <label for="castNames">Potential Cast Members</label>
-                            <textarea id="castNames" rows="3" placeholder="List names of dancers / company performers being considered..."></textarea>
+                            <textarea id="castNames" rows="3" placeholder="e.g. Maya Lin, Jordan Smith, Chris Taylor (or leave blank if TBD)..."></textarea>
                         </div>
                         <div class="text-group">
                             <label for="crewNames">Potential Technical Crew</label>
-                            <textarea id="crewNames" rows="3" placeholder="Stage Manager, Lighting Operator, Sound Tech candidates..."></textarea>
+                            <textarea id="crewNames" rows="3" placeholder="e.g. Sam R. (Stage Manager), Alex K. (Lighting Board Operator)..."></textarea>
                         </div>
                     </div>
 
@@ -555,7 +566,7 @@
 
                     <div class="text-group" style="margin-top: 6px;">
                         <label for="sponsorNotes">Sponsor / Underwriter Prospects (Donations or Playbill Ads)</label>
-                        <input type="text" id="sponsorNotes" placeholder="Names of potential local business sponsors, patrons, or grant programs...">
+                        <input type="text" id="sponsorNotes" placeholder="e.g. Local bank foundation, private patrons, program ad sponsors...">
                     </div>
                 </section>
 
@@ -702,7 +713,7 @@
                 <div class="rep-header" style="background: rgba(139, 92, 246, 0.06);">
                     <input type="checkbox" class="rep-checkbox" id="check_${id}" checked onclick="syncRowActive('${id}')">
                     <div class="rep-title-block" style="display: flex; gap: 10px; align-items: center;">
-                        <input type="text" id="name_${id}" placeholder="Enter Custom / Unlisted Piece Title" style="background: #25263a; border: 1.5px solid #4a4d6f; color: #ffffff; padding: 6px 12px; border-radius: 8px; font-weight: 600; width: 60%; font-family: var(--font-body); font-size: 0.86rem; outline: none;">
+                        <input type="text" id="name_${id}" placeholder="e.g. New Trio Work, Duet in Black, etc..." style="background: #2e3452; border: 1.5px solid #5d6391; color: #ffffff; padding: 8px 12px; border-radius: 8px; font-weight: 600; width: 60%; font-family: var(--font-body); font-size: 0.88rem; outline: none;">
                         <span style="font-size: 0.75rem; color: var(--accent-purple);">Custom Work</span>
                     </div>
                 </div>
