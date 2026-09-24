@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alithea Creations — Production Alignment & Repertoire Intake</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #121218;
+            --bg-surface-hover: #1c1c24;
+            --bg-card: #181820;
+            --border-color: #272730;
+            --border-light: #383844;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-purple: #8b5cf6;
+            --accent-indigo: #6366f1;
+            --accent-gold: #f59e0b;
+            --accent-blue: #0ea5e9;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding: 24px 16px;
+        }
+
+        .container {
+            max-width: 840px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header */
+        .header-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(99, 102, 241, 0.06));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Section Panel */
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .step-tag {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-purple);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        /* Cards Grid */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .select-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .select-card:hover {
+            border-color: var(--border-light);
+        }
+
+        .select-card.active {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        .select-card-title {
+            font-weight: 700;
+            font-size: 0.92rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .select-card-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Checkbox List */
+        .rep-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .rep-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .rep-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rep-item:hover {
+            border-color: var(--border-light);
+        }
+
+        .rep-item.checked {
+            border-color: var(--accent-indigo);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .rep-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-purple);
+            cursor: pointer;
+        }
+
+        .rep-info {
+            flex-grow: 1;
+        }
+
+        .rep-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .rep-meta {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* Sliders */
+        .slider-row {
+            display: grid;
+            grid-template-columns: 160px 1fr 90px;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        @media (max-width: 600px) {
+            .slider-row {
+                grid-template-columns: 1fr 70px;
+            }
+            .slider-row input[type="range"] {
+                grid-column: span 2;
+            }
+        }
+
+        .slider-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .slider-val {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-align: right;
+            color: var(--text-primary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-purple);
+            cursor: pointer;
+        }
+
+        /* Text Input */
+        .text-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .text-input-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .text-input-group input, .text-input-group textarea {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            outline: none;
+        }
+
+        .text-input-group input:focus, .text-input-group textarea:focus {
+            border-color: var(--accent-purple);
+        }
+
+        /* Action Buttons */
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            border: none;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+
+        .modal-toast {
+            display: none;
+            background: var(--accent-emerald);
+            color: #000;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header-card">
+            <div class="brand-logo">A</div>
+            <div class="header-text">
+                <h1>Alithea Creations — Production Alignment Intake</h1>
+                <p>2-minute pulse check for Nick & Zoe ahead of our executive strategy sync.</p>
+            </div>
+        </header>
+
+        <!-- Form Container -->
+        <form id="intakeForm" onsubmit="handleSubmit(event)">
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                <!-- 1. Window & Community Calendar -->
+                <section class="panel">
+                    <div class="panel-title">
+                        <span>1. Production Window & Venue Preference</span>
+                        <span class="step-tag">Schedule</span>
+                    </div>
+
+                    <p style="font-size: 0.82rem; color: var(--text-secondary);">Select the production window that best fits your artistic timeline and rehearsals:</p>
+
+                    <div class="option-grid">
+                        <div class="select-card" id="cardWin1" onclick="selectWindow('Jan 30, 2027')">
+                            <div class="select-card-title">
+                                <span>❄️ Jan 30, 2027</span>
+                            </div>
+                            <div class="select-card-desc">Harvester Arts Gallery. High setup friction (5hr day-of call). High winter weather risk. 4-week rehearsal prep.</div>
+                        </div>
+
+                        <div class="select-card active" id="cardWin2" onclick="selectWindow('Late May 2027')">
+                            <div class="select-card-title">
+                                <span>🌸 Late May 2027</span>
+                                <span style="font-size: 0.7rem; color: var(--accent-emerald); font-weight: 700;">RECOMMENDED</span>
+                            </div>
+                            <div class="select-card-desc">Pre-Memorial Day. Post-WSU graduation. Warm weather. 16-week comfortable rehearsal runway. Harvester or Wilner.</div>
+                        </div>
+
+                        <div class="select-card" id="cardWin3" onclick="selectWindow('Oct/Nov 2027')">
+                            <div class="select-card-title">
+                                <span>🍂 Oct / Nov 2027</span>
+                            </div>
+                            <div class="select-card-desc">Curated Gallery Season. Harvester pre-configured as a theatre (near zero setup friction) or WSU Black Box.</div>
+                        </div>
+                    </div>
+
+                    <!-- Master Calendar Access -->
+                    <div class="text-input-group" style="margin-top: 10px;">
+                        <label>WSU & Community Master Calendar Audit</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; color: var(--text-secondary);">
+                            <label style="text-transform: none; font-weight: normal; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="calWsu" checked> Nick / Zoe has direct access to WSU Performing Arts 2027 production calendar
+                            </label>
+                            <label style="text-transform: none; font-weight: normal; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="calCentury2"> Need to verify Century II / Wichita Grand Opera conflict dates
+                            </label>
+                            <label style="text-transform: none; font-weight: normal; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="calFirstFriday"> Check Downtown Wichita First Friday Gallery Walk overlap
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="text-input-group">
+                        <label for="calendarNotes">Any known performer or venue blackouts?</label>
+                        <input type="text" id="calendarNotes" placeholder="e.g. WSU spring break March 15-22, dancer auditions early Jan...">
+                    </div>
+                </section>
+
+                <!-- 2. Repertoire Selection -->
+                <section class="panel">
+                    <div class="panel-title">
+                        <span>2. Candidate Repertoire (Select 3–5 pieces)</span>
+                        <span class="step-tag">Artistic Program</span>
+                    </div>
+
+                    <div class="rep-grid">
+                        <div class="rep-item checked" onclick="toggleRep(this, 'Electric Nights')">
+                            <input type="checkbox" class="rep-checkbox" checked>
+                            <div class="rep-info">
+                                <div class="rep-name">Electric Nights</div>
+                                <div class="rep-meta">6–12 Dancers • 22 min • Flagship Ensemble</div>
+                            </div>
+                        </div>
+
+                        <div class="rep-item" onclick="toggleRep(this, 'Angels Rising')">
+                            <input type="checkbox" class="rep-checkbox">
+                            <div class="rep-info">
+                                <div class="rep-name">Angels Rising</div>
+                                <div class="rep-meta">10–12 Dancers • 28 min • Full Company Finale</div>
+                            </div>
+                        </div>
+
+                        <div class="rep-item checked" onclick="toggleRep(this, 'The Wait')">
+                            <input type="checkbox" class="rep-checkbox" checked>
+                            <div class="rep-info">
+                                <div class="rep-name">The Wait</div>
+                                <div class="rep-meta">2 Dancers • 8 min • Classical Duet</div>
+                            </div>
+                        </div>
+
+                        <div class="rep-item checked" onclick="toggleRep(this, 'Threshold Whispers')">
+                            <input type="checkbox" class="rep-checkbox" checked>
+                            <div class="rep-info">
+                                <div class="rep-name">Threshold Whispers</div>
+                                <div class="rep-meta">3 Dancers • 14 min • Contemporary Trio</div>
+                            </div>
+                        </div>
+
+                        <div class="rep-item" onclick="toggleRep(this, 'Urban Pulse')">
+                            <input type="checkbox" class="rep-checkbox">
+                            <div class="rep-info">
+                                <div class="rep-name">Urban Pulse</div>
+                                <div class="rep-meta">5 Dancers • 12 min • Street / Kinetic</div>
+                            </div>
+                        </div>
+
+                        <div class="rep-item" onclick="toggleRep(this, 'Ascent')">
+                            <input type="checkbox" class="rep-checkbox">
+                            <div class="rep-info">
+                                <div class="rep-name">Ascent</div>
+                                <div class="rep-meta">2 Dancers • 14 min • Partner Acrobatics</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Distinct Cast Headcount & Scale -->
+                <section class="panel">
+                    <div class="panel-title">
+                        <span>3. Cast Headcount Target</span>
+                        <span class="step-tag">Labor Driver</span>
+                    </div>
+
+                    <div class="option-grid">
+                        <div class="select-card" id="cardScaleA" onclick="selectScale(4, 'Chamber (4 Dancers)')">
+                            <div class="select-card-title">Option A: Chamber</div>
+                            <div class="select-card-desc">4 Distinct Dancers • Lower rehearsal overhead • Minimalist staging</div>
+                        </div>
+
+                        <div class="select-card active" id="cardScaleB" onclick="selectScale(6, 'Core Rep (6 Dancers)')">
+                            <div class="select-card-title">Option B: Core Rep</div>
+                            <div class="select-card-desc">6 Distinct Dancers • Recommended • Fits Electric Nights & Duets</div>
+                        </div>
+
+                        <div class="select-card" id="cardScaleC" onclick="selectScale(12, 'Grand Ensemble (12 Dancers)')">
+                            <div class="select-card-title">Option C: Full Company</div>
+                            <div class="select-card-desc">10–12 Dancers • Full staging of Angels Rising • Higher labor cost</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. Compensation & Pricing Intentions -->
+                <section class="panel">
+                    <div class="panel-title">
+                        <span>4. Compensation & Ticket Pricing Gut-Check</span>
+                        <span class="step-tag">Unit Economics</span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div class="slider-row">
+                            <span class="slider-label">Performer Show Call</span>
+                            <input type="range" id="performerFee" min="100" max="250" step="25" value="150" oninput="updateSliders()">
+                            <span class="slider-val" id="valPerformerFee">$150 / show</span>
+                        </div>
+
+                        <div class="slider-row">
+                            <span class="slider-label">Rehearsal Hourly Pay</span>
+                            <input type="range" id="rehearsalRate" min="15" max="35" step="5" value="20" oninput="updateSliders()">
+                            <span class="slider-val" id="valRehearsalRate">$20 / hr</span>
+                        </div>
+
+                        <div class="slider-row">
+                            <span class="slider-label">General Admission Ticket</span>
+                            <input type="range" id="ticketPrice" min="15" max="40" step="2.5" value="25" oninput="updateSliders()">
+                            <span class="slider-val" id="valTicketPrice">$25.00</span>
+                        </div>
+
+                        <div class="slider-row">
+                            <span class="slider-label">VIP Patron Ticket Tier</span>
+                            <input type="range" id="vipTicketPrice" min="30" max="75" step="5" value="45" oninput="updateSliders()">
+                            <span class="slider-val" id="valVipTicketPrice">$45.00</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Operational Enablers -->
+                <section class="panel">
+                    <div class="panel-title">
+                        <span>5. Key Operational Enablers</span>
+                        <span class="step-tag">Logistics</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div class="text-input-group">
+                            <label>WSU Rehearsal Studio Access</label>
+                            <select id="wsuStudio" style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); padding: 10px; border-radius: 8px;">
+                                <option value="Free / Faculty Waiver">Free / Donated via WSU Faculty/Alumni</option>
+                                <option value="Commercial Rental Needed">Commercial Studio Needed ($25/hr)</option>
+                                <option value="Unsure / Need to Ask">Unsure / Need to ask dance department</option>
+                            </select>
+                        </div>
+
+                        <div class="text-input-group">
+                            <label>Lighting & Sound Rig Scope</label>
+                            <select id="rigScope" style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); padding: 10px; border-radius: 8px;">
+                                <option value="Harvester House Gear is Fine">Harvester House Gear is Fine ($0 added)</option>
+                                <option value="Kent AV Supplemental Rig Needed">Kent AV Supplemental Rig ($500–$1,000)</option>
+                                <option value="Unsure / Need Tech Walkthrough">Unsure / Need site walkthrough</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-input-group">
+                        <label for="sponsorLeads">Potential Local Sponsors / Underwriters ($300–$500)</label>
+                        <input type="text" id="sponsorLeads" placeholder="Names of 1-2 local businesses, university contacts, or patrons...">
+                    </div>
+                </section>
+
+                <!-- Actions -->
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+                    <button type="submit" class="btn-submit">
+                        <span>📋 Generate & Copy Intake Summary to Clipboard</span>
+                    </button>
+                    <div id="toast" class="modal-toast">✅ Copied to clipboard! You can paste this directly into an email, SMS, or Notion.</div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let selectedWindow = 'Late May 2027';
+        let selectedHeadcount = 6;
+        let selectedScaleName = 'Core Rep (6 Dancers)';
+        let selectedPieces = ['Electric Nights', 'The Wait', 'Threshold Whispers'];
+
+        function selectWindow(win) {
+            selectedWindow = win;
+            document.getElementById('cardWin1').classList.toggle('active', win === 'Jan 30, 2027');
+            document.getElementById('cardWin2').classList.toggle('active', win === 'Late May 2027');
+            document.getElementById('cardWin3').classList.toggle('active', win === 'Oct/Nov 2027');
+        }
+
+        function selectScale(count, name) {
+            selectedHeadcount = count;
+            selectedScaleName = name;
+            document.getElementById('cardScaleA').classList.toggle('active', count === 4);
+            document.getElementById('cardScaleB').classList.toggle('active', count === 6);
+            document.getElementById('cardScaleC').classList.toggle('active', count === 12);
+        }
+
+        function toggleRep(el, pieceName) {
+            const cb = el.querySelector('.rep-checkbox');
+            cb.checked = !cb.checked;
+            el.classList.toggle('checked', cb.checked);
+
+            if (cb.checked) {
+                if (!selectedPieces.includes(pieceName)) selectedPieces.push(pieceName);
+            } else {
+                selectedPieces = selectedPieces.filter(p => p !== pieceName);
+            }
+        }
+
+        function updateSliders() {
+            document.getElementById('valPerformerFee').textContent = `$${document.getElementById('performerFee').value} / show`;
+            document.getElementById('valRehearsalRate').textContent = `$${document.getElementById('rehearsalRate').value} / hr`;
+            document.getElementById('valTicketPrice').textContent = `$${parseFloat(document.getElementById('ticketPrice').value).toFixed(2)}`;
+            document.getElementById('valVipTicketPrice').textContent = `$${parseFloat(document.getElementById('vipTicketPrice').value).toFixed(2)}`;
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            const performerFee = document.getElementById('performerFee').value;
+            const rehearsalRate = document.getElementById('rehearsalRate').value;
+            const ticketPrice = document.getElementById('ticketPrice').value;
+            const vipPrice = document.getElementById('vipTicketPrice').value;
+            const wsuStudio = document.getElementById('wsuStudio').value;
+            const rigScope = document.getElementById('rigScope').value;
+            const calNotes = document.getElementById('calendarNotes').value || 'None noted';
+            const sponsorLeads = document.getElementById('sponsorLeads').value || 'None entered yet';
+
+            const summary = `ALITHEA CREATIONS — PRE-MEETING PRODUCTION INTAKE
+==================================================
+TARGET WINDOW: ${selectedWindow}
+CALENDAR CONFLICT CHECK:
+- WSU Master Calendar Access: ${document.getElementById('calWsu').checked ? 'Yes' : 'No'}
+- Century II / WGO Check: ${document.getElementById('calCentury2').checked ? 'Required' : 'No'}
+- First Friday Check: ${document.getElementById('calFirstFriday').checked ? 'Required' : 'No'}
+- Blackout Notes: ${calNotes}
+
+REPERTOIRE & CASTING:
+- Candidate Pieces: ${selectedPieces.join(', ')}
+- Distinct Cast Headcount: ${selectedHeadcount} Dancers (${selectedScaleName})
+
+COMPENSATION & PRICING TARGETS:
+- Performer Call Fee: $${performerFee} / show
+- Rehearsal Hourly Rate: $${rehearsalRate} / hr
+- General Admission Ticket: $${ticketPrice}
+- VIP Patron Ticket Tier: $${vipPrice}
+
+OPERATIONAL ENABLERS:
+- WSU Studio Space: ${wsuStudio}
+- Lighting & Sound Rig: ${rigScope}
+- Sponsor Leads: ${sponsorLeads}
+==================================================`;
+
+            navigator.clipboard.writeText(summary).then(() => {
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 4000);
+            });
+        }
+    </script>
+</body>
+</html>
